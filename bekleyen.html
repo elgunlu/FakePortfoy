@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portföy Sayfası</title>
+    <style>
+    body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+    }
+		
+    .header {
+    background-color: #0d2238;
+    color: white;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+	}
+	.header h1 {
+    font-size: 14px;
+    margin: 0;
+	}
+	.tabs {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    border-bottom: 1px solid #ccc;
+    background-color: #0d2238;
+	}
+
+	.tabs .tab {
+		background: none;
+		border: none;
+		font-size: 12px;
+		cursor: pointer;
+		padding: 0px;
+	}
+
+	.tabs .active {
+		font-weight: bold;
+		color: #00BFFF;
+	}
+	.tabs .notactive {
+		font-weight: bold;
+		color: #f9f9f9;
+	}
+		.top-bar-alt {
+			margin-left: 0px;
+			margin-bottom: 5px;
+
+            background-color: #f0f0f0;
+			text-align: center;
+        }
+
+
+        .portfolio {
+            background-color: white;
+            margin: 0px;
+            padding: 5px 10px 5px 10px; /*üst sağ alt sol*/
+            border-radius: 0px;
+
+        }
+		.portfolio2 {
+            background-color: #f0f0f0;
+            margin: 0px;
+            padding: 5px 5px 5px 0px; /*üst sağ alt sol*/
+            border-radius: 0px;
+
+        }
+
+        .symbol {
+		padding: 5px 0;
+            font-weight: bold;
+            font-size: 16px;
+            text-align: left;
+			width:130px;
+        }
+        .symbolinfo {
+            color: gray;
+            font-size: 8.5px;
+            margin-top: 0;
+            text-align: left;
+
+        }
+        .sub-info {
+            color: gray;
+            font-size: 10px;
+            margin-top: 0;
+            text-align: right;
+        }
+        .value {
+            font-weight: bold;
+            font-size: 16px;
+            text-align: left;
+			width:95px;
+        }.value1 {
+            font-weight: bold;
+            font-size: 16px;
+            text-align: left;
+			width:105px;
+        }
+		    .triangle {
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 7px solid white;
+            position: absolute;
+            top: 80px; /* Hisse başlığına göre yukarıdan konumlandırma */
+            left: 25%; /* Ortalamak için */
+            transform: translateX(-50%);
+        }
+        .greensagkutu {
+            color: green;
+            font-weight: bold;
+            font-size: 10px;
+            text-align: right;
+	    width:50px;
+        }
+		
+		.green1 {
+			color: black;
+            font-size: 10px;
+            text-align: right;
+			width:100px;
+		padding-left: 10px;
+		padding-top:5px;
+		padding-bottom:5px;
+        }
+		.green1k {
+			color: black;
+            font-size: 6px;
+            text-align: right;
+			width:100px;
+		padding-left: 10px;
+        }
+		.green2 {
+			color: gray;
+            font-size: 10px;
+            text-align: left;
+			width:170px;
+padding-left: 10px;
+        }
+		.green1bb {
+		font-weight: bold;
+			color: black;
+            font-size: 11px;
+            text-align: left;
+			width:450px;
+		padding-left: 10px;
+		padding-top:0px;
+		padding-bottom:0px;
+        }
+		.green1sagok {
+			color: gray;
+            font-size: 10px;
+            text-align: right;
+			Padding-right: 5px;
+			width:50px;
+        }
+
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-container label {
+            display: block;
+            margin-bottom: 8px;
+        }
+        .form-container input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-container button[type="button"] {
+            padding: 10px 20px;
+            background-color: #0d2238;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .table {
+            width: 100%;
+            display: table;
+
+			padding-right: 10px;
+			background: white;
+	   
+        }
+        .table div {
+            display: table-row;
+        }
+        .table div div {
+            display: table-cell;
+        }
+        .table div div.th {
+            font-weight: bold;
+            text-align: right;
+        }.table2 {
+            width: 100%;
+            display: table;
+
+
+        }
+        .table2 div {
+            display: table-row;
+        }
+        .table2 div div {
+            display: table-cell;
+        }
+        .table2 div div.th {
+            font-weight: bold;
+            text-align: right;
+        }.table5 {
+            width: 100%;
+            display: table;
+
+        }
+        .table5 div {
+            display: table-row;
+        }
+        .table5 div div {
+            display: table-cell;
+        }
+        .table5 div div.th {
+            font-weight: bold;
+            text-align: right;
+        }
+		.icons button {
+			
+			background: none;
+			border: none;
+			color: #00BFFF;
+			font-size: 20px;
+			font-weight: bold;
+			cursor: pointer;
+			text-align: right;
+		}
+		.icons2 button {
+			
+			background: none;
+			border: none;
+			color: #0d2238;
+			font-size: 12px;
+			font-weight: bold;
+			cursor: pointer;
+			text-align: right;
+		} 
+		.oval-box {
+		
+		display: inline-block;
+		color: gray;
+		width: 500px;
+		height: 30px;
+		background-color: white;
+		border-radius: 5px;
+		text-align: center;
+		line-height: 30px;
+		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+		margin-left: 10px;
+		font-size: 11px;
+		border: 1px solid lightgray; /* İnce gri çizgi için eklenen kısım */
+		}     
+		.oval-box1 {
+            display: inline-block;
+			color: gray;
+            width: 80px; /* Genişliği ayarlayabilirsiniz */
+            height: 20px;
+            background-color: white;
+            border-radius: 15px; /* Oval görünüm */
+            text-align: center;
+            line-height: 20px; /* Dikey ortalama için */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Hafif gölge */
+            margin-left: 10px;
+            font-size: 9px;
+
+
+        }.oval-box2 {
+            display: inline-block;
+			color: gray;
+            width: 80px; /* Genişliği ayarlayabilirsiniz */
+            height: 20px;
+            background-color: white;
+            border-radius: 15px; /* Oval görünüm */
+            text-align: center;
+            line-height: 20px; /* Dikey ortalama için */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Hafif gölge */
+            margin-left: 10px;
+            font-size: 8px;
+
+
+        }.oval-box5 {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    background-color: #c7fccb;
+    border-radius: 2px;
+    text-align: center;
+    line-height: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-left: 5px;
+    font-size: 10px;
+    float: right; /* Added to move the element to the right */
+}
+        #fullscreen-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #fullscreen-btn:hover {
+            background-color: #007B9E;
+        }
+
+
+    </style>
+</head>
+<body>
+
+
+    <div class="header">
+		<div class="icons">
+		<button class="nav"><a href="index.html"><img src="https://iili.io/2dBC2yv.png" width="15px" height="13px" class="icon"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
+		</div>
+		<h1>GÜNLÜK İŞLEMLER</h1>
+		<div class="icons">
+            <button class="nav">&#x21bb;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://iili.io/2dBCFuR.png" width="15px" height="13px" class="icon"></button>
+        </div>
+    </div>
+	
+	    <div class="tabs">
+        <button class="tab notactive">Hisse</button>
+		<div class="triangle"></div>
+        <button class="tab active">VİOP</button>
+    </div>
+
+			<div class="top-bar-alt">
+			
+			<div class="portfolio">
+			<div class="table"> 
+			<div>
+                <div class="oval-box">
+                <div class="green1bb" id="price1yok">Bekleyen&nbsp</div>
+		<div class="green1sagok"><img src="https://iili.io/2KVQmDg.png" width="12px" height="7px" class="icon">&nbsp</div>
+				
+             </div>   
+			</div>
+			</div>
+			</div>
+	        <div class="portfolio2">
+			<div class="table2"> 
+			<div>
+                <div class="green2">SEMBOL</div>
+                <div class="green1"><div class="oval-box1" ">ADET&nbsp&nbsp&nbsp&nbsp<img src="https://iili.io/2dBCd8J.png" width="8px" height="5px" class="icon">&nbsp</div></div>
+				
+                <div class="green1"><div class="oval-box1" ">FİYAT&nbsp&nbsp&nbsp&nbsp<img src="https://iili.io/2dBCd8J.png" width="8px" height="5px" class="icon">&nbsp</div></div>
+				
+                <div class="green1"><div class="oval-box2" ">ALIŞ/SATIŞ&nbsp&nbsp&nbsp&nbsp<img src="https://iili.io/2dBCd8J.png" width="8px" height="5px" class="icon">&nbsp</div></div>
+            </div>
+			</div>
+			</div> 
+			</div> 
+
+    <div class="portfolio">
+        <div class="table5"> 
+            <div>
+                <div class="symbol" id="symbol1">BMSTL</div>
+                <div class="value" id="price1">4.200,00</div>
+                <div class="value1" id="cost1">48,680</div>
+                <div class="greensagkutu" id="profit1"><div class="oval-box5" ">A&nbsp</div></div>
+            </div>
+            <div>
+                <div class="symbolinfo" id="symbolinfo1">BMS BIRLESIK METAL</div>
+                <div class="sub-info" id="amount1"> </div>
+                <div class="sub-info" id="t21"> </div>
+                <div class="sub-info" id="sold1">Yeni</div>
+            </div>
+        </div>  
+
+
+    </div>
+	<br><br><br><center>
+
+<div class="form-container">
+    <form id="updateForm">
+        <label for="symbol">Sembol:</label>
+        <input type="text" id="symbol" name="symbol" value="BMSTL" required>
+		
+		<label for="symbol_i">Sembol İnfo:</label>
+        <input type="text" id="symbol_i" name="symbolinfo" value="BMS BIRLESIK METAL" required>
+		
+        <label for="price">Fiyat:</label>
+        <input type="text" id="price" name="price" value="4.200,00" required>
+
+        <label for="cost">Maliyet:</label>
+        <input type="text" id="cost" name="cost" value="48,680" required>
+
+        <button type="button" onclick="updateValues()">Güncelle</button>
+    </form>
+</div>
+<script>
+    function updateValues() {
+        // Formdan yeni değerleri al
+        const newSymbol = document.getElementById('symbol').value;
+		const newSymbol_i = document.getElementById('symbol_i').value;
+        const newPrice = document.getElementById('price').value;
+        const newCost = document.getElementById('cost').value;
+
+        // Sayfadaki mevcut değerleri güncelle
+        document.getElementById('symbol1').innerText = newSymbol;
+		document.getElementById('symbolinfo1').innerText = newSymbol_i;
+        document.getElementById('price1').innerText = newPrice;
+        document.getElementById('cost1').innerText = newCost;
+		
+        // Verileri localStorage'a kaydet
+        localStorage.setItem('symbol', newSymbol);
+        localStorage.setItem('symbolinfo', newSymbol_i);
+        localStorage.setItem('price', newPrice);
+        localStorage.setItem('cost', newCost);
+    }
+	function loadValues() {
+        // LocalStorage'dan verileri yükle
+        const savedSymbol = localStorage.getItem('symbol');
+        const savedSymbol_i = localStorage.getItem('symbolinfo');
+        const savedPrice = localStorage.getItem('price');
+        const savedCost = localStorage.getItem('cost');
+
+        // Eğer veriler varsa, form alanlarına ve sayfaya yerleştir
+        if (savedSymbol) {
+            document.getElementById('symbol').value = savedSymbol;
+            document.getElementById('symbol1').innerText = savedSymbol;
+        }
+        if (savedSymbol_i) {
+            document.getElementById('symbol_i').value = savedSymbol_i;
+            document.getElementById('symbolinfo1').innerText = savedSymbol_i;
+        }
+        if (savedPrice) {
+            document.getElementById('price').value = savedPrice;
+            document.getElementById('price1').innerText = savedPrice;
+        }
+        if (savedCost) {
+            document.getElementById('cost').value = savedCost;
+            document.getElementById('cost1').innerText = savedCost;
+        }
+    }
+
+    // Sayfa yüklendiğinde verileri yükle
+    window.onload = loadValues;
+</script>
+
+</body>
+</html>
