@@ -418,12 +418,12 @@ padding-left: 10px;
     </form>
 </div>
 <script>
-    function updateValues() {
+        function updateValues() {
     // Formdan yeni değerleri al
     const newSymbol = document.getElementById('symbol').value;
     const newSymbol_i = document.getElementById('symbol_i').value;
-    const newPrice = parseFloat(document.getElementById('price').value.replace(',', '.'));
-    const newCost = parseFloat(document.getElementById('cost').value.replace(',', '.'));
+    const newPrice = parseFloat(document.getElementById('price').value.replace(/\./g, '').replace(',', '.'));
+    const newCost = parseFloat(document.getElementById('cost').value.replace(/\./g, '').replace(',', '.'));
 
     // Sayfadaki mevcut değerleri güncelle
     document.getElementById('symbol1').innerText = newSymbol;
@@ -438,12 +438,15 @@ padding-left: 10px;
     localStorage.setItem('cost', newCost.toLocaleString('tr-TR', { minimumFractionDigits: 3, maximumFractionDigits: 3 }));
 }
 
+
 function loadValues() {
+    // LocalStorage'dan verileri yükle
     const savedSymbol = localStorage.getItem('symbol');
     const savedSymbol_i = localStorage.getItem('symbolinfo');
-    const savedPrice = parseFloat(localStorage.getItem('price').replace(',', '.'));
-    const savedCost = parseFloat(localStorage.getItem('cost').replace(',', '.'));
+    const savedPrice = localStorage.getItem('price');
+    const savedCost = localStorage.getItem('cost');
 
+    // Eğer veriler varsa, form alanlarına ve sayfaya yerleştir
     if (savedSymbol) {
         document.getElementById('symbol').value = savedSymbol;
         document.getElementById('symbol1').innerText = savedSymbol;
@@ -452,15 +455,16 @@ function loadValues() {
         document.getElementById('symbol_i').value = savedSymbol_i;
         document.getElementById('symbolinfo1').innerText = savedSymbol_i;
     }
-    if (!isNaN(savedPrice)) {
-        document.getElementById('price').value = savedPrice.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        document.getElementById('price1').innerText = savedPrice.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    if (savedPrice) {
+        document.getElementById('price').value = parseFloat(savedPrice.replace(/\./g, '').replace(',', '.')).toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        document.getElementById('price1').innerText = parseFloat(savedPrice.replace(/\./g, '').replace(',', '.')).toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
-    if (!isNaN(savedCost)) {
-        document.getElementById('cost').value = savedCost.toLocaleString('tr-TR', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
-        document.getElementById('cost1').innerText = savedCost.toLocaleString('tr-TR', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+    if (savedCost) {
+        document.getElementById('cost').value = parseFloat(savedCost.replace(/\./g, '').replace(',', '.')).toLocaleString('tr-TR', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+        document.getElementById('cost1').innerText = parseFloat(savedCost.replace(/\./g, '').replace(',', '.')).toLocaleString('tr-TR', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
     }
 }
+
 
 
     // Sayfa yüklendiğinde verileri yükle
