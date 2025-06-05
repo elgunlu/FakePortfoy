@@ -427,9 +427,9 @@
         document.getElementById("hisseInfo").value = hisse.info;
         document.getElementById("fiyat").value = hisse.fiyat;
         document.getElementById("maliyet").value = hisse.maliyet;
-        document.getElementById("adet").value = "";
+        document.getElementById("adet").value = hisse.adet;
         document.getElementById("t2Adet").value = hisse.t2Adet;
-        document.getElementById("sAdet").value = "0";
+        document.getElementById("sAdet").value = hisse.sAdet;
     }
 
     function formuTemizle() {
@@ -481,7 +481,7 @@
                         if (hisseKod.includes(temizAd)) {
                             console.log(`${hisseKod} güncelleniyor...`);
                             hisse.fiyat = yeniFiyat; // Yeni fiyatı tabloya ata
-                            hisse.karZarar = ("0"); // Kar zarar güncelle
+                            hisse.karZarar = ((yeniFiyat - hisse.maliyet) / hisse.maliyet * 100).toFixed(2); // Kar zarar güncelle
                         }
                     });
                 }
