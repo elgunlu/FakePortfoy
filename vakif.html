@@ -40,9 +40,11 @@
         .light-blue-bar {
             background-color: #ADD8E6; /* Light Blue */
         }
-
-        /* Sabit alt çubuk için özel padding kaldırıldı */
-        /* .main-content-padding CSS tanımı kaldırıldı */
+        
+        /* Formun üstündeki kartlar ile form arasına büyük bir boşluk eklemek için */
+        .large-top-margin {
+            margin-top: 10rem; /* mt-40'a denk, ancak daha net bir ifade için özel stil */
+        }
     </style>
 </head>
 <body>
@@ -69,10 +71,10 @@
                 EMİRLERİM
             </div>
         </nav>
-
+        
         <!-- 3. STOCK PORTFOLIO LIST (Hisse Portföy Listesi) ve 4. Form (Kaydırılabilir) -->
-        <!-- main-content-padding kaldırıldı, genel alt boşluk için pb-4 eklendi -->
-        <main class="bg-[#f7f7f7] p-2 space-y-2 pb-4">
+        <!-- pb-8: Alttan biraz boşluk bırakır. -->
+        <main class="bg-[#f7f7f7] p-2 space-y-2 pb-8">
 
             <!-- BMSTL.E (YÜKSELİŞ) -->
             <div id="card-BMSTL.E" class="stock-card bg-white p-4 rounded-lg shadow-sm">
@@ -159,17 +161,11 @@
                     </div>
                 </div>
             </div>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
+            <br><br><br><br><br><br><br><br><br><br>
+
             <!-- 4. Hisse Güncelleme Formu (Kaydırılabilir) -->
-            <!-- Fixed sınıfları kaldırıldı, content ile birlikte kayacak -->
-            <div id="form-container" class="mt-4 bg-white shadow-md p-4 rounded-lg border-t-4 border-amber-500">
+            <!-- mt-48 yerine mt-96 kullanıldı, bu da 384px boşluk demektir. -->
+            <div id="form-container" class="mt-96 bg-white shadow-md p-4 rounded-lg border-t-4 border-amber-500">
                 <h3 class="text-lg font-semibold mb-3 border-b pb-2">Hisse Verilerini Güncelle</h3>
                 <form id="update-form">
                     <!-- Hisse Seçimi -->
@@ -210,12 +206,17 @@
         
     </div>
 
-    <script>
-        // Lucide ikonlarını sayfada görünür hale getirir
-        lucide.createIcons();
+    <script type="module">
+        // Firebase Modülleri KALDIRILDI, yerel depolama kullanılıyor.
 
-        // Hisse senedi verilerini saklayan merkezi obje
-        let stocks = {
+        // Hisse senedi verilerini saklayan merkezi obje (Varsayılan değerler)
+        let stocks = {}; 
+
+        // LocalStorage Anahtarı
+        const STOCK_KEY = 'portfolioStocks';
+
+        // Varsayılan hisse verilerini tanımla
+        const defaultStocks = {
             'BMSTL.E': { 
                 quantity: 1186.00, 
                 costPrice: 26.37, 
@@ -236,6 +237,51 @@
         const updateForm = document.getElementById('update-form');
         const messageBox = document.getElementById('message-box');
 
+        // --- LOCAL STORAGE İŞLEMLERİ ---
+
+        /**
+         * Verileri localStorage'dan yükler.
+         */
+        function loadStocksFromLocalStorage() {
+            const storedData = localStorage.getItem(STOCK_KEY);
+            if (storedData) {
+                try {
+                    // Yerel olarak depolanan veriyi kullan
+                    stocks = JSON.parse(storedData);
+                    console.log("Stocks loaded from LocalStorage.");
+                    showMessage("Veriler yerel olarak yüklendi.", 'bg-blue-100 text-blue-800');
+                } catch (e) {
+                    console.error("Error parsing stored data:", e);
+                    stocks = defaultStocks;
+                    showMessage("Yerel veri bozuk. Varsayılanlar yüklendi.", 'bg-red-100 text-red-800');
+                }
+            } else {
+                // Veri yoksa, varsayılanları kullan ve kaydet
+                stocks = defaultStocks;
+                console.log("No data found in LocalStorage, using default data.");
+                saveStocksToLocalStorage();
+            }
+            updatePortfolioView();
+            fillFormWithSelectedStock();
+        }
+
+        /**
+         * Mevcut hisse verilerini localStorage'a kaydeder.
+         */
+        function saveStocksToLocalStorage() {
+            try {
+                localStorage.setItem(STOCK_KEY, JSON.stringify(stocks));
+                console.log("Stocks saved to LocalStorage successfully.");
+            } catch (e) {
+                console.error("Error saving data to LocalStorage:", e);
+                // Kullanıcıya bir hata mesajı gösterilebilir
+                showMessage("Veri yerel olarak kaydedilemedi (Depolama Alanı Hatası).", 'bg-red-100 text-red-800');
+            }
+        }
+
+
+        // --- UI VE HESAPLAMA İŞLEMLERİ ---
+
         /**
          * Sayfadaki tüm hisse verilerini ve portföy yüzdelerini günceller.
          */
@@ -246,6 +292,11 @@
             // 1. Her hissenin toplam değerini hesapla ve genel portföy toplamını bul
             stockKeys.forEach(code => {
                 const stock = stocks[code];
+                // Sayısal değerler için kontrol
+                stock.quantity = parseFloat(stock.quantity) || 0;
+                stock.costPrice = parseFloat(stock.costPrice) || 0;
+                stock.lastPrice = parseFloat(stock.lastPrice) || 0;
+
                 stock.totalValue = stock.quantity * stock.lastPrice;
                 totalPortfolioValue += stock.totalValue;
             });
@@ -259,7 +310,7 @@
                 const profitAmount = stock.totalValue - totalCost;
                 // Maliyet 0 ise yüzdeyi 0 olarak ayarla
                 const profitPercent = totalCost > 0 ? (profitAmount / totalCost) * 100 : 0;
-                const isProfit = profitAmount >= 0;
+                const isProfit = profitAmount >= -0.01; // Küçük küsürat farklarını ihmal et
 
                 // DOM Elementleri
                 const totalValueElement = document.getElementById(`total-value-${code}`);
@@ -273,7 +324,6 @@
                 const changePercentElement = document.getElementById(`change-percent-${code}`);
                 const changeAmountElement = document.getElementById(`change-amount-${code}`);
 
-
                 // --- GÖRÜNÜM GÜNCELLEMELERİ ---
                 
                 // Portföy Payı Hesaplama ve Çubuk
@@ -281,24 +331,19 @@
                 portfolioPercentElement.textContent = `%${percent.toFixed(2)}`;
                 progressBar.style.width = `${percent}%`;
 
-                // BMSTL.E'nin portföy payı metin rengini yeşil, diğerini gri/varsayılan yap
-                portfolioPercentElement.classList.remove('text-green-600', 'text-gray-600');
-                if (code === 'BMSTL.E') {
-                    portfolioPercentElement.classList.add('text-green-600');
-                } else if (code === 'HKTM.E') {
-                    portfolioPercentElement.classList.add('text-gray-600');
-                }
-                
-                // Kar/Zarar Renk ve Stil
-                changeContainerElement.classList.remove('text-green-600', 'text-red-600');
-                changeIconElement.classList.remove('fill-green-600', 'fill-red-600', 'rotate-180');
+                // Renk ve Stil Ayarları
+                // Null kontrolü ekle (Sayfa yüklenirken DOM elementi henüz oluşmamış olabilir, nadir bir durum)
+                if (changeContainerElement) {
+                    changeContainerElement.classList.remove('text-green-600', 'text-red-600');
+                    changeIconElement.classList.remove('fill-green-600', 'fill-red-600', 'rotate-180');
 
-                if (isProfit) {
-                    changeContainerElement.classList.add('text-green-600');
-                    changeIconElement.classList.add('fill-green-600', 'rotate-180');
-                } else {
-                    changeContainerElement.classList.add('text-red-600');
-                    changeIconElement.classList.add('fill-red-600');
+                    if (isProfit) {
+                        changeContainerElement.classList.add('text-green-600');
+                        changeIconElement.classList.add('fill-green-600', 'rotate-180');
+                    } else {
+                        changeContainerElement.classList.add('text-red-600');
+                        changeIconElement.classList.add('fill-red-600');
+                    }
                 }
 
                 // Kar/Zarar Yüzde Metni
@@ -308,7 +353,7 @@
                 
                 // Kar/Zarar Miktar Metni
                 const formattedAmount = Math.abs(profitAmount).toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                const amountSign = isProfit ? '+' : ''; // TL formatında - işareti otomatik gelir
+                const amountSign = isProfit ? '+' : ''; 
                 changeAmountElement.textContent = `(${amountSign}${formattedAmount} TL)`;
 
                 // Temel Veriler
@@ -334,9 +379,11 @@
             }
         }
 
+
         /**
          * Form gönderimini işler ve verileri günceller.
          */
+        
         function handleFormSubmit(event) {
             event.preventDefault();
             
@@ -357,9 +404,10 @@
             stocks[selectedCode].costPrice = newCostPrice;
             stocks[selectedCode].lastPrice = newLastPrice;
 
-            // Görünümü güncelle
+            // Görünümü güncelle ve yerel olarak kaydet
             updatePortfolioView();
-            showMessage(`${selectedCode} verileri başarıyla güncellendi!`, 'bg-green-100 text-green-800');
+            saveStocksToLocalStorage();
+            showMessage(`${selectedCode} verileri başarıyla güncellendi ve yerel olarak kaydedildi.`, 'bg-green-100 text-green-800');
         }
 
         /**
@@ -380,12 +428,8 @@
 
         // Sayfa yüklendiğinde:
         window.onload = function() {
-            // İkonları oluştur
             lucide.createIcons();
-            // Başlangıç görünümünü güncelle
-            updatePortfolioView();
-            // Formu ilk hissenin verileriyle doldur
-            fillFormWithSelectedStock();
+            loadStocksFromLocalStorage(); // Yerel depodan verileri yükle
         }
     </script>
 </body>
