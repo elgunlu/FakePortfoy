@@ -2,13 +2,10 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="theme-color" content="#EEA73F">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hisse Portföyü</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons for vector icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Tailwind CSS CDN --><script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons for vector icons --><script src="https://unpkg.com/lucide@latest"></script>
     <style>
         /* Inter font for a clean, modern look */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
@@ -20,12 +17,12 @@
         
         /* Özel Turuncu/Sarı Tonu - Başlık Rengi */
         .header-bg {
-            background-color: #fca311; /* Ekrandaki turuncu tona yakın */
+            background-color: #fcae01; /* Ekrandaki turuncu tona yakın */
         }
 
         /* Sekmeler için özel stil */
         .tab-active {
-            border-bottom: 3px solid white;
+            border-bottom: 3:px solid white;
             color: white;
             font-weight: 600;
         }
@@ -49,56 +46,38 @@
     </style>
 </head>
 <body>
-<!-- Sahte Status Bar -->
-<div id="status-bar"></div>
-<style>
-  #status-bar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 28px; /* status bar yüksekliği */
-    background-color: #EEA73F; /* istediğin renk */
-    z-index: 1000;
-  }
-  body {
-    margin-top: 28px; /* içerik status bar altında kalmasın */
-  }
-</style>
 
+    <!-- Ana uygulama konteyneri --><div id="app" class="max-w-md mx-auto bg-white min-h-screen shadow-lg relative">
 
-    <!-- Ana uygulama konteyneri -->
-    <div id="app" class="max-w-md mx-auto bg-white min-h-screen shadow-lg relative">
-
-        <!-- 1. HEADER (Başlık Çubuğu) -->
-        <header class="header-bg p-4 flex items-center justify-between text-gray-700 shadow-md">
+        <!-- YENİ 0. STATÜS BARI (Saat ve Statü Simgesi) --><!-- Arka plan header-bg (turuncu) olarak ayarlandı ve metin rengi koyu gri (text-gray-800) yapıldı --><div id="status-bar" class="flex justify-between items-center px-4 py-2 header-bg text-gray-800">
+            <!-- Sol: Güncel Saat - Boyut text-base (Normal) olarak büyütüldü ve mt-2 (8px) aşağı kaydırıldı --><span id="current-time" class="text-base font-medium mt-2"></span>
+            <!-- Sağ: Simge - genişlik w-1/2 (ekran genişliğinin yarısı) olarak ayarlandı --><img id="status-icon" src="https://i.imgur.com/EILFjgD.png" alt="Statü Simgesi" class="w-1/2 rounded-sm"
+                 onerror="this.onerror=null; this.src='https://placehold.co/20x20/ffffff/000000?text=S'">
+        </div>
+        
+        <!-- 1. HEADER (Başlık Çubuğu) --><header class="header-bg p-4 flex items-center justify-between text-gray-700 shadow-md">
             <div class="flex items-center space-x-4">
-                <!-- Solundaki < işaretine tıklandığında index.html'i yeniden yüklemesi için link eklendi -->
-                <a href="index.html" class="text-gray-700 hover:text-gray-900 transition duration-150">
+                <!-- Solundaki < işareti koyu gri yapıldı --><a href="index.html" class="text-gray-800 hover:text-gray-900 transition duration-150">
                     <i data-lucide="chevron-left" class="w-6 h-6"></i>
                 </a>
-                <h1 class="text-gray-700">Hisse Portföy</h1>
+                <h1 class="text-gray-800">Hisse Portföy</h1>
             </div>
             <img src="https://i.imgur.com/Us12XRm.png" alt="tradeumine Logo" class="w-6 h-6 rounded-sm" 
                  onerror="this.onerror=null; this.src='https://placehold.co/32x32/fca311/ffffff?text=Logo'">
         </header>
 
-        <!-- 2. TAB NAV (Sekmeler) -->
-        <nav class="flex justify-around bg-white text-gray-500 border-b border-gray-200">
+        <!-- 2. TAB NAV (Sekmeler) --><nav class="flex justify-around bg-white text-gray-500 border-b border-gray-200">
             <div class="tab-active p-3 text-center w-1/2 text-black border-b-2 border-amber-500">
-                PORTFOYÜM
+                PORTFÖYÜM
             </div>
             <div class="p-3 text-center w-1/2 hover:text-gray-700">
                 EMİRLERİM
             </div>
         </nav>
         
-        <!-- 3. STOCK PORTFOLIO LIST (Hisse Portföy Listesi) ve 4. Form (Kaydırılabilir) -->
-        <!-- pb-8: Alttan biraz boşluk bırakır. -->
-        <main class="bg-[#f7f7f7] p-2 space-y-2 pb-8">
+        <!-- 3. STOCK PORTFOLIO LIST (Hisse Portföy Listesi) ve 4. Form (Kaydırılabilir) --><!-- pb-8: Alttan biraz boşluk bırakır. --><main class="bg-[#f7f7f7] p-2 space-y-2 pb-8">
 
-            <!-- BMSTL.E (YÜKSELİŞ) -->
-            <div id="card-BMSTL.E" class="stock-card bg-white p-4 rounded-lg shadow-sm">
+            <!-- BMSTL.E (YÜKSELİŞ) --><div id="card-BMSTL.E" class="stock-card bg-white p-4 rounded-lg shadow-sm">
                 <!-- Üst Satır (Hisse Adı ve Toplam Değer) --><div class="flex justify-between items-center mb-2">
                     <h2 class="text-lg font-bold">BMSTL.E</h2>
                     <div class="flex items-center space-x-2">
@@ -109,8 +88,7 @@
 
                 <!-- Oranlar (Küçük Yüzde ve Büyük Değişim) --><div class="flex justify-between items-end mb-2">
                     <!-- Sol: Küçük Yüzde - Portföy Payı --><span id="portfolio-percent-BMSTL.E" class="text-green-600 text-xs font-medium">%76.04</span>
-                    <!-- Sağ: Değişim (Büyük Font) -->
-                    <div class="text-right"> 
+                    <!-- Sağ: Değişim (Büyük Font) --><div class="text-right"> 
                         <div id="change-container-BMSTL.E" class="text-sm font-semibold text-green-600 flex items-center">
                             <i id="change-icon-BMSTL.E" data-lucide="triangle" class="w-3 h-3 fill-green-600 mr-1 rotate-180"></i>
                             <span id="change-percent-BMSTL.E">%214,37</span>
@@ -119,8 +97,7 @@
                     </div>
                 </div>
 
-                <!-- Grafik Çubuğu (Tam Genişlikte, ayrı satırda) -->
-                <div class="w-full h-2 bg-gray-200 rounded-full mb-3">
+                <!-- Grafik Çubuğu (Tam Genişlikte, ayrı satırda) --><div class="w-full h-2 bg-gray-200 rounded-full mb-3">
                     <div id="progress-bar-BMSTL.E" class="h-2 light-blue-bar rounded-full" style="width: 76.04%;"></div>
                 </div>
 
@@ -140,8 +117,7 @@
                 </div>
             </div>
 
-            <!-- HKTM.E (DÜŞÜŞ) -->
-            <div id="card-HKTM.E" class="stock-card bg-white p-4 rounded-lg shadow-sm">
+            <!-- HKTM.E (DÜŞÜŞ) --><div id="card-HKTM.E" class="stock-card bg-white p-4 rounded-lg shadow-sm">
                 <!-- Üst Satır (Hisse Adı ve Toplam Değer) --><div class="flex justify-between items-center mb-2">
                     <h2 class="text-lg font-bold">HKTM.E</h2>
                     <div class="flex items-center space-x-2">
@@ -152,8 +128,7 @@
 
                 <!-- Oranlar (Küçük Yüzde ve Büyük Değişim) --><div class="flex justify-between items-end mb-2">
                     <!-- Sol: Küçük Yüzde - Portföy Payı --><span id="portfolio-percent-HKTM.E" class="text-gray-600 text-xs font-medium">%23.96</span>
-                    <!-- Sağ: Değişim (Büyük Font) -->
-                    <div class="text-right">
+                    <!-- Sağ: Değişim (Büyük Font) --><div class="text-right">
                         <div id="change-container-HKTM.E" class="text-sm font-semibold text-red-600 flex items-center">
                             <i id="change-icon-HKTM.E" data-lucide="triangle" class="w-3 h-3 fill-red-600 mr-1"></i>
                             <span id="change-percent-HKTM.E">-%10,79</span>
@@ -162,8 +137,7 @@
                     </div>
                 </div>
 
-                <!-- Grafik Çubuğu (Tam Genişlikte, ayrı satırda) -->
-                <div class="w-full h-2 bg-gray-200 rounded-full mb-3">
+                <!-- Grafik Çubuğu (Tam Genişlikte, ayrı satırda) --><div class="w-full h-2 bg-gray-200 rounded-full mb-3">
                     <div id="progress-bar-HKTM.E" class="h-2 light-blue-bar rounded-full" style="width: 23.96%;"></div>
                 </div>
 
@@ -182,16 +156,12 @@
                     </div>
                 </div>
             </div>
-            <!-- Kullanıcının isteği üzerine <br> etiketleri korundu ve boşluk için sadece onlar kullanılıyor. -->
-            <br><br><br><br><br><br><br><br><br><br>
+            <!-- Kullanıcının isteği üzerine <br> etiketleri korundu ve boşluk için sadece onlar kullanılıyor. --><br><br><br><br><br><br><br><br><br><br>
 
-            <!-- 4. Hisse Güncelleme Formu (Kaydırılabilir) -->
-            <!-- mt-96 sınıfı kaldırıldı. Boşluk için yukarıdaki <br> etiketleri kullanılıyor. -->
-            <div id="form-container" class="bg-white shadow-md p-4 rounded-lg border-t-4 border-amber-500">
+            <!-- 4. Hisse Güncelleme Formu (Kaydırılabilir) --><div id="form-container" class="bg-white shadow-md p-4 rounded-lg border-t-4 border-amber-500">
                 <h3 class="text-lg font-semibold mb-3 border-b pb-2">Hisse Verilerini Güncelle</h3>
                 <form id="update-form">
-                    <!-- Hisse Seçimi -->
-                    <div class="mb-3">
+                    <!-- Hisse Seçimi --><div class="mb-3">
                         <label for="stock-select" class="detail-label block mb-1">Hisse Kodu Seçin</label>
                         <select id="stock-select" class="w-full p-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500">
                             <option value="BMSTL.E">BMSTL.E</option>
@@ -199,20 +169,17 @@
                         </select>
                     </div>
 
-                    <!-- Satılabilir Adet -->
-                    <div class="mb-3">
+                    <!-- Satılabilir Adet --><div class="mb-3">
                         <label for="input-quantity" class="detail-label block mb-1">Satılabilir Adet</label>
                         <input type="number" id="input-quantity" class="w-full p-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500" step="0.01">
                     </div>
 
-                    <!-- Maliyet* -->
-                    <div class="mb-3">
+                    <!-- Maliyet* --><div class="mb-3">
                         <label for="input-cost-price" class="detail-label block mb-1">Maliyet* (TL)</label>
                         <input type="number" id="input-cost-price" class="w-full p-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500" step="0.01">
                     </div>
 
-                    <!-- Son İşlem Fiyatı -->
-                    <div class="mb-5">
+                    <!-- Son İşlem Fiyatı --><div class="mb-5">
                         <label for="input-last-price" class="detail-label block mb-1">Son İşlem Fiyatı (TL)</label>
                         <input type="number" id="input-last-price" class="w-full p-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500" step="0.01">
                     </div>
@@ -229,13 +196,19 @@
     </div>
 
     <script type="module">
-        // Firebase Modülleri KALDIRILDI, yerel depolama kullanılıyor.
-
         // Hisse senedi verilerini saklayan merkezi obje (Varsayılan değerler)
         let stocks = {}; 
 
         // LocalStorage Anahtarı
         const STOCK_KEY = 'portfolioStocks';
+
+        // Statü çubuğunda rastgele gösterilecek resim URL'leri
+        const IMAGE_URLS = [
+            "https://i.imgur.com/LIvAA9i.png",
+            "https://i.imgur.com/o8d9pDs.png",
+            "https://i.imgur.com/SD90fP5.png"
+        ];
+
 
         // Varsayılan hisse verilerini tanımla
         const defaultStocks = {
@@ -258,6 +231,40 @@
         const inputLastPrice = document.getElementById('input-last-price');
         const updateForm = document.getElementById('update-form');
         const messageBox = document.getElementById('message-box');
+        const statusIcon = document.getElementById('status-icon');
+
+
+        // --- YARDIMCI İŞLEMLER ---
+
+        /**
+         * IMAGE_URLS dizisinden rastgele bir resim seçer ve statü simgesini günceller.
+         */
+        function setRandomStatusIcon() {
+            if (statusIcon && IMAGE_URLS.length > 0) {
+                const randomIndex = Math.floor(Math.random() * IMAGE_URLS.length);
+                const randomUrl = IMAGE_URLS[randomIndex];
+                statusIcon.src = randomUrl;
+            }
+        }
+
+        // --- ZAMAN GÜNCELLEME İŞLEMİ ---
+
+        /**
+         * Güncel saati alıp üst çubuğa yazar.
+         */
+        function updateTime() {
+            const timeElement = document.getElementById('current-time');
+            if (timeElement) {
+                // Türkiye saat formatı (HH:mm)
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+                timeElement.textContent = timeString;
+            }
+        }
+        
+        // Saati her saniye güncellemek için ayarla
+        setInterval(updateTime, 1000); 
+        updateTime(); // Başlangıçta hemen çağır
 
         // --- LOCAL STORAGE İŞLEMLERİ ---
 
@@ -452,6 +459,7 @@
         window.onload = function() {
             lucide.createIcons();
             loadStocksFromLocalStorage(); // Yerel depodan verileri yükle
+            setRandomStatusIcon(); // Rastgele statü simgesini ayarla
         }
     </script>
 </body>
