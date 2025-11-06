@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hisse Portföyü</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons for vector icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Inter font for a clean, modern look */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f7f7; /* Hafif gri arka plan */
+        }
+        
+        /* Özel Turuncu/Sarı Tonu - Başlık Rengi */
+        .header-bg {
+            background-color: #fca311; /* Ekrandaki turuncu tona yakın */
+        }
+
+        /* Sekmeler için özel stil */
+        .tab-active {
+            border-bottom: 3px solid white;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Tüm detay başlıkları için küçük, açık gri stil */
+        .detail-label {
+            font-size: 0.7rem;
+            color: #6b7280; /* Gray-500 */
+            white-space: nowrap; /* Başlıkların kırılmasını engeller */
+        }
+
+        /* Açık mavi çubuk rengi */
+        .light-blue-bar {
+            background-color: #ADD8E6; /* Light Blue */
+        }
+
+        /* Sabit alt çubuk için özel padding kaldırıldı */
+        /* .main-content-padding CSS tanımı kaldırıldı */
+    </style>
+</head>
+<body>
+
+    <!-- Ana uygulama konteyneri -->
+    <div id="app" class="max-w-md mx-auto bg-white min-h-screen shadow-lg relative">
+
+        <!-- 1. HEADER (Başlık Çubuğu) -->
+        <header class="header-bg p-4 flex items-center justify-between text-gray-700 shadow-md">
+            <div class="flex items-center space-x-4">
+                <i data-lucide="chevron-left" class="w-6 h-6"></i>
+                <h1 class="text-gray-700">Hisse Portföy</h1>
+            </div>
+            <img src="https://i.imgur.com/Us12XRm.png" alt="tradeumine Logo" class="w-6 h-6 rounded-sm" 
+                 onerror="this.onerror=null; this.src='https://placehold.co/32x32/fca311/ffffff?text=Logo'">
+        </header>
+
+        <!-- 2. TAB NAV (Sekmeler) -->
+        <nav class="flex justify-around bg-white text-gray-500 border-b border-gray-200">
+            <div class="tab-active p-3 text-center w-1/2 text-black border-b-2 border-amber-500">
+                PORTFÖYÜM
+            </div>
+            <div class="p-3 text-center w-1/2 hover:text-gray-700">
+                EMİRLERİM
+            </div>
+        </nav>
+
+        <!-- 3. STOCK PORTFOLIO LIST (Hisse Portföy Listesi) ve 4. Form (Kaydırılabilir) -->
+        <!-- main-content-padding kaldırıldı, genel alt boşluk için pb-4 eklendi -->
+        <main class="bg-[#f7f7f7] p-2 space-y-2 pb-4">
+
+            <!-- BMSTL.E (YÜKSELİŞ) -->
+            <div id="card-BMSTL.E" class="stock-card bg-white p-4 rounded-lg shadow-sm">
+                <!-- Üst Satır (Hisse Adı ve Toplam Değer) --><div class="flex justify-between items-center mb-2">
+                    <h2 class="text-lg font-bold">BMSTL.E</h2>
+                    <div class="flex items-center space-x-2">
+                        <span id="total-value-BMSTL.E" class="text-xl font-bold">98.390,53 TL</span>
+                        <i data-lucide="chevron-right" class="w-5 h-5 text-gray-400"></i>
+                    </div>
+                </div>
+
+                <!-- Oranlar (Küçük Yüzde ve Büyük Değişim) --><div class="flex justify-between items-end mb-2">
+                    <!-- Sol: Küçük Yüzde - Portföy Payı --><span id="portfolio-percent-BMSTL.E" class="text-green-600 text-xs font-medium">%76.04</span>
+                    <!-- Sağ: Değişim (Büyük Font) -->
+                    <div class="text-right"> 
+                        <div id="change-container-BMSTL.E" class="text-sm font-semibold text-green-600 flex items-center">
+                            <i id="change-icon-BMSTL.E" data-lucide="triangle" class="w-3 h-3 fill-green-600 mr-1 rotate-180"></i>
+                            <span id="change-percent-BMSTL.E">%214,37</span>
+                            <span id="change-amount-BMSTL.E" class="text-xs font-normal ml-1">(+67.093,08 TL)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grafik Çubuğu (Tam Genişlikte, ayrı satırda) -->
+                <div class="w-full h-2 bg-gray-200 rounded-full mb-3">
+                    <div id="progress-bar-BMSTL.E" class="h-2 light-blue-bar rounded-full" style="width: 76.04%;"></div>
+                </div>
+
+                <!-- Detaylar (3 Sütunlu Grid) --><div class="grid grid-cols-3 gap-2 text-sm">
+                    <div>
+                        <div class="detail-label">Satılabilir Adet</div>
+                        <div id="quantity-BMSTL.E" class="font-medium">1.186,00</div>
+                    </div>
+                    <div>
+                        <div class="detail-label">Maliyet*</div>
+                        <div id="cost-price-BMSTL.E" class="font-medium">26,37 TL</div>
+                    </div>
+                    <div>
+                        <div class="detail-label">Son İşlem Fiyatı</div>
+                        <div id="last-price-BMSTL.E" class="font-medium">82,90 TL</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HKTM.E (DÜŞÜŞ) -->
+            <div id="card-HKTM.E" class="stock-card bg-white p-4 rounded-lg shadow-sm">
+                <!-- Üst Satır (Hisse Adı ve Toplam Değer) --><div class="flex justify-between items-center mb-2">
+                    <h2 class="text-lg font-bold">HKTM.E</h2>
+                    <div class="flex items-center space-x-2">
+                        <span id="total-value-HKTM.E" class="text-xl font-bold">31.000,00 TL</span>
+                        <i data-lucide="chevron-right" class="w-5 h-5 text-gray-400"></i>
+                    </div>
+                </div>
+
+                <!-- Oranlar (Küçük Yüzde ve Büyük Değişim) --><div class="flex justify-between items-end mb-2">
+                    <!-- Sol: Küçük Yüzde - Portföy Payı --><span id="portfolio-percent-HKTM.E" class="text-gray-600 text-xs font-medium">%23.96</span>
+                    <!-- Sağ: Değişim (Büyük Font) -->
+                    <div class="text-right">
+                        <div id="change-container-HKTM.E" class="text-sm font-semibold text-red-600 flex items-center">
+                            <i id="change-icon-HKTM.E" data-lucide="triangle" class="w-3 h-3 fill-red-600 mr-1"></i>
+                            <span id="change-percent-HKTM.E">-%10,79</span>
+                            <span id="change-amount-HKTM.E" class="text-xs font-normal ml-1">(-3.750,00 TL)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grafik Çubuğu (Tam Genişlikte, ayrı satırda) -->
+                <div class="w-full h-2 bg-gray-200 rounded-full mb-3">
+                    <div id="progress-bar-HKTM.E" class="h-2 light-blue-bar rounded-full" style="width: 23.96%;"></div>
+                </div>
+
+                <!-- Detaylar (3 Sütunlu Grid) --><div class="grid grid-cols-3 gap-2 text-sm">
+                    <div>
+                        <div class="detail-label">Satılabilir Adet</div>
+                        <div id="quantity-HKTM.E" class="font-medium">2.500,00</div>
+                    </div>
+                    <div>
+                        <div class="detail-label">Maliyet*</div>
+                        <div id="cost-price-HKTM.E" class="font-medium">13,90 TL</div>
+                    </div>
+                    <div>
+                        <div class="detail-label">Son İşlem Fiyatı</div>
+                        <div id="last-price-HKTM.E" class="font-medium">12,40 TL</div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <!-- 4. Hisse Güncelleme Formu (Kaydırılabilir) -->
+            <!-- Fixed sınıfları kaldırıldı, content ile birlikte kayacak -->
+            <div id="form-container" class="mt-4 bg-white shadow-md p-4 rounded-lg border-t-4 border-amber-500">
+                <h3 class="text-lg font-semibold mb-3 border-b pb-2">Hisse Verilerini Güncelle</h3>
+                <form id="update-form">
+                    <!-- Hisse Seçimi -->
+                    <div class="mb-3">
+                        <label for="stock-select" class="detail-label block mb-1">Hisse Kodu Seçin</label>
+                        <select id="stock-select" class="w-full p-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500">
+                            <option value="BMSTL.E">BMSTL.E</option>
+                            <option value="HKTM.E">HKTM.E</option>
+                        </select>
+                    </div>
+
+                    <!-- Satılabilir Adet -->
+                    <div class="mb-3">
+                        <label for="input-quantity" class="detail-label block mb-1">Satılabilir Adet</label>
+                        <input type="number" id="input-quantity" class="w-full p-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500" step="0.01">
+                    </div>
+
+                    <!-- Maliyet* -->
+                    <div class="mb-3">
+                        <label for="input-cost-price" class="detail-label block mb-1">Maliyet* (TL)</label>
+                        <input type="number" id="input-cost-price" class="w-full p-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500" step="0.01">
+                    </div>
+
+                    <!-- Son İşlem Fiyatı -->
+                    <div class="mb-5">
+                        <label for="input-last-price" class="detail-label block mb-1">Son İşlem Fiyatı (TL)</label>
+                        <input type="number" id="input-last-price" class="w-full p-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500" step="0.01">
+                    </div>
+
+                    <button type="submit" class="w-full bg-amber-500 text-white font-semibold py-2 rounded-md hover:bg-amber-600 transition duration-150">
+                        Verileri Kaydet ve Güncelle
+                    </button>
+                    <div id="message-box" class="mt-3 p-2 text-sm text-center rounded-md hidden"></div>
+                </form>
+            </div>
+            
+        </main>
+        
+    </div>
+
+    <script>
+        // Lucide ikonlarını sayfada görünür hale getirir
+        lucide.createIcons();
+
+        // Hisse senedi verilerini saklayan merkezi obje
+        let stocks = {
+            'BMSTL.E': { 
+                quantity: 1186.00, 
+                costPrice: 26.37, 
+                lastPrice: 82.90
+            },
+            'HKTM.E': { 
+                quantity: 2500.00, 
+                costPrice: 13.90, 
+                lastPrice: 12.40
+            }
+        };
+
+        // Form elementlerini seçme
+        const stockSelect = document.getElementById('stock-select');
+        const inputQuantity = document.getElementById('input-quantity');
+        const inputCostPrice = document.getElementById('input-cost-price');
+        const inputLastPrice = document.getElementById('input-last-price');
+        const updateForm = document.getElementById('update-form');
+        const messageBox = document.getElementById('message-box');
+
+        /**
+         * Sayfadaki tüm hisse verilerini ve portföy yüzdelerini günceller.
+         */
+        function updatePortfolioView() {
+            let totalPortfolioValue = 0;
+            const stockKeys = Object.keys(stocks);
+
+            // 1. Her hissenin toplam değerini hesapla ve genel portföy toplamını bul
+            stockKeys.forEach(code => {
+                const stock = stocks[code];
+                stock.totalValue = stock.quantity * stock.lastPrice;
+                totalPortfolioValue += stock.totalValue;
+            });
+
+            // 2. Her hissenin portföydeki payını, Kar/Zarar oranını hesapla ve DOM'u güncelle
+            stockKeys.forEach(code => {
+                const stock = stocks[code];
+                
+                // Finansal Hesaplamalar
+                const totalCost = stock.quantity * stock.costPrice;
+                const profitAmount = stock.totalValue - totalCost;
+                // Maliyet 0 ise yüzdeyi 0 olarak ayarla
+                const profitPercent = totalCost > 0 ? (profitAmount / totalCost) * 100 : 0;
+                const isProfit = profitAmount >= 0;
+
+                // DOM Elementleri
+                const totalValueElement = document.getElementById(`total-value-${code}`);
+                const quantityElement = document.getElementById(`quantity-${code}`);
+                const costPriceElement = document.getElementById(`cost-price-${code}`);
+                const lastPriceElement = document.getElementById(`last-price-${code}`);
+                const portfolioPercentElement = document.getElementById(`portfolio-percent-${code}`);
+                const progressBar = document.getElementById(`progress-bar-${code}`);
+                const changeContainerElement = document.getElementById(`change-container-${code}`);
+                const changeIconElement = document.getElementById(`change-icon-${code}`);
+                const changePercentElement = document.getElementById(`change-percent-${code}`);
+                const changeAmountElement = document.getElementById(`change-amount-${code}`);
+
+
+                // --- GÖRÜNÜM GÜNCELLEMELERİ ---
+                
+                // Portföy Payı Hesaplama ve Çubuk
+                const percent = totalPortfolioValue > 0 ? (stock.totalValue / totalPortfolioValue) * 100 : 0;
+                portfolioPercentElement.textContent = `%${percent.toFixed(2)}`;
+                progressBar.style.width = `${percent}%`;
+
+                // BMSTL.E'nin portföy payı metin rengini yeşil, diğerini gri/varsayılan yap
+                portfolioPercentElement.classList.remove('text-green-600', 'text-gray-600');
+                if (code === 'BMSTL.E') {
+                    portfolioPercentElement.classList.add('text-green-600');
+                } else if (code === 'HKTM.E') {
+                    portfolioPercentElement.classList.add('text-gray-600');
+                }
+                
+                // Kar/Zarar Renk ve Stil
+                changeContainerElement.classList.remove('text-green-600', 'text-red-600');
+                changeIconElement.classList.remove('fill-green-600', 'fill-red-600', 'rotate-180');
+
+                if (isProfit) {
+                    changeContainerElement.classList.add('text-green-600');
+                    changeIconElement.classList.add('fill-green-600', 'rotate-180');
+                } else {
+                    changeContainerElement.classList.add('text-red-600');
+                    changeIconElement.classList.add('fill-red-600');
+                }
+
+                // Kar/Zarar Yüzde Metni
+                const formattedPercent = Math.abs(profitPercent).toFixed(2).replace('.', ',');
+                const sign = isProfit ? '+' : '-';
+                changePercentElement.textContent = `%${sign}${formattedPercent}`;
+                
+                // Kar/Zarar Miktar Metni
+                const formattedAmount = Math.abs(profitAmount).toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                const amountSign = isProfit ? '+' : ''; // TL formatında - işareti otomatik gelir
+                changeAmountElement.textContent = `(${amountSign}${formattedAmount} TL)`;
+
+                // Temel Veriler
+                totalValueElement.textContent = stock.totalValue.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' });
+                quantityElement.textContent = stock.quantity.toFixed(2).replace('.', ',');
+                costPriceElement.textContent = stock.costPrice.toFixed(2).replace('.', ',') + ' TL';
+                lastPriceElement.textContent = stock.lastPrice.toFixed(2).replace('.', ',') + ' TL';
+            });
+        }
+
+        /**
+         * Seçilen hissenin verilerini form alanlarına doldurur.
+         */
+        function fillFormWithSelectedStock() {
+            const selectedCode = stockSelect.value;
+            const stock = stocks[selectedCode];
+            
+            if (stock) {
+                // Not: Form alanlarına virgül yerine nokta kullanılmalı (step="0.01" nedeniyle)
+                inputQuantity.value = stock.quantity;
+                inputCostPrice.value = stock.costPrice;
+                inputLastPrice.value = stock.lastPrice;
+            }
+        }
+
+        /**
+         * Form gönderimini işler ve verileri günceller.
+         */
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            
+            const selectedCode = stockSelect.value;
+            // Virgül yerine nokta kullanarak sayıya çevir
+            const newQuantity = parseFloat(inputQuantity.value.replace(',', '.'));
+            const newCostPrice = parseFloat(inputCostPrice.value.replace(',', '.'));
+            const newLastPrice = parseFloat(inputLastPrice.value.replace(',', '.'));
+
+            // Basit doğrulama
+            if (isNaN(newQuantity) || isNaN(newCostPrice) || isNaN(newLastPrice)) {
+                showMessage("Lütfen geçerli sayısal değerler girin.", 'bg-red-100 text-red-800');
+                return;
+            }
+
+            // Veriyi güncelle
+            stocks[selectedCode].quantity = newQuantity;
+            stocks[selectedCode].costPrice = newCostPrice;
+            stocks[selectedCode].lastPrice = newLastPrice;
+
+            // Görünümü güncelle
+            updatePortfolioView();
+            showMessage(`${selectedCode} verileri başarıyla güncellendi!`, 'bg-green-100 text-green-800');
+        }
+
+        /**
+         * Kullanıcıya bilgi/hata mesajı gösterir.
+         */
+        function showMessage(message, classes) {
+            messageBox.textContent = message;
+            messageBox.className = `mt-3 p-2 text-sm text-center rounded-md ${classes}`;
+            messageBox.classList.remove('hidden');
+            setTimeout(() => {
+                messageBox.classList.add('hidden');
+            }, 5000);
+        }
+
+        // Olay dinleyicileri
+        stockSelect.addEventListener('change', fillFormWithSelectedStock);
+        updateForm.addEventListener('submit', handleFormSubmit);
+
+        // Sayfa yüklendiğinde:
+        window.onload = function() {
+            // İkonları oluştur
+            lucide.createIcons();
+            // Başlangıç görünümünü güncelle
+            updatePortfolioView();
+            // Formu ilk hissenin verileriyle doldur
+            fillFormWithSelectedStock();
+        }
+    </script>
+</body>
+</html>
