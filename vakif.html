@@ -41,9 +41,9 @@
             background-color: #ADD8E6; /* Light Blue */
         }
         
-        /* Formun üstündeki kartlar ile form arasına büyük bir boşluk eklemek için */
+        /* Bu stil artık kullanılmıyor, boşluk <br> etiketleriyle sağlanıyor. */
         .large-top-margin {
-            margin-top: 10rem; /* mt-40'a denk, ancak daha net bir ifade için özel stil */
+            margin-top: 10rem;
         }
     </style>
 </head>
@@ -55,7 +55,10 @@
         <!-- 1. HEADER (Başlık Çubuğu) -->
         <header class="header-bg p-4 flex items-center justify-between text-gray-700 shadow-md">
             <div class="flex items-center space-x-4">
-                <i data-lucide="chevron-left" class="w-6 h-6"></i>
+                <!-- Solundaki < işaretine tıklandığında index.html'i yeniden yüklemesi için link eklendi -->
+                <a href="index.html" class="text-gray-700 hover:text-gray-900 transition duration-150">
+                    <i data-lucide="chevron-left" class="w-6 h-6"></i>
+                </a>
                 <h1 class="text-gray-700">Hisse Portföy</h1>
             </div>
             <img src="https://i.imgur.com/Us12XRm.png" alt="tradeumine Logo" class="w-6 h-6 rounded-sm" 
@@ -161,11 +164,12 @@
                     </div>
                 </div>
             </div>
+            <!-- Kullanıcının isteği üzerine <br> etiketleri korundu ve boşluk için sadece onlar kullanılıyor. -->
             <br><br><br><br><br><br><br><br><br><br>
 
             <!-- 4. Hisse Güncelleme Formu (Kaydırılabilir) -->
-            <!-- mt-48 yerine mt-96 kullanıldı, bu da 384px boşluk demektir. -->
-            <div id="form-container" class="mt-96 bg-white shadow-md p-4 rounded-lg border-t-4 border-amber-500">
+            <!-- mt-96 sınıfı kaldırıldı. Boşluk için yukarıdaki <br> etiketleri kullanılıyor. -->
+            <div id="form-container" class="bg-white shadow-md p-4 rounded-lg border-t-4 border-amber-500">
                 <h3 class="text-lg font-semibold mb-3 border-b pb-2">Hisse Verilerini Güncelle</h3>
                 <form id="update-form">
                     <!-- Hisse Seçimi -->
