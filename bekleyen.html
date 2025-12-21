@@ -164,10 +164,9 @@
     
     let activeCat = 'bekleyen';
 
-    // Rakam Formatlama Fonksiyonu (25000 -> 25.000,00)
+    // Rakam Formatlama Fonksiyonu (Adet/Fiyat için 2 ondalık)
     function formatCurrency(value) {
         if (!value) return "0,00";
-        // Varsa eski noktaları kaldır, virgülü noktaya çevir ki sayıya dönüşebilsin
         let cleanValue = value.toString().replace(/\./g, '').replace(',', '.');
         let num = parseFloat(cleanValue);
         if (isNaN(num)) return value; 
@@ -175,6 +174,19 @@
         return num.toLocaleString('tr-TR', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
+        });
+    }
+
+    // Maliyet Formatlama Fonksiyonu (Maliyet için 3 ondalık)
+    function formatCost(value) {
+        if (!value) return "0,000";
+        let cleanValue = value.toString().replace(/\./g, '').replace(',', '.');
+        let num = parseFloat(cleanValue);
+        if (isNaN(num)) return value; 
+        
+        return num.toLocaleString('tr-TR', {
+            minimumFractionDigits: 3,
+            maximumFractionDigits: 3
         });
     }
 
@@ -274,7 +286,7 @@
         const s = document.getElementById('symbolInput').value.trim();
         const i = document.getElementById('infoInput').value.trim();
         let p = document.getElementById('priceInput').value.trim();
-        const c = document.getElementById('costInput').value.trim();
+        let c = document.getElementById('costInput').value.trim();
         const selIdx = document.getElementById('stockSelector').value;
 
         if (!s) {
@@ -282,11 +294,13 @@
             return;
         }
 
-        // Fiyatı formatla
+        // Fiyatı formatla (2 ondalık)
         const formattedPrice = formatCurrency(p);
+        // Maliyeti formatla (3 ondalık)
+        const formattedCost = formatCost(c);
 
         const existingType = (selIdx !== 'NEW_STOCK') ? db[activeCat][selIdx].type : 'A';
-        const obj = { s: s.toUpperCase(), i: i, p: formattedPrice, c: c, type: existingType };
+        const obj = { s: s.toUpperCase(), i: i, p: formattedPrice, c: formattedCost, type: existingType };
 
         if (selIdx === 'NEW_STOCK') {
             db[activeCat].unshift(obj);
