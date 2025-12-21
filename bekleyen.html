@@ -44,7 +44,6 @@
     .table div, .table2 div, .table5 div { display: table-row; }
     .table div div, .table2 div div, .table5 div div { display: table-cell; }
     .icons button {
-			
 			background: none;
 			border: none;
 			color: #00BFFF;
@@ -119,9 +118,9 @@
             <div class="table2"> 
                 <div>
                     <div class="green2">SEMBOL</div>
-                    <div class="green1"><div class="oval-box1" ">ADET&nbsp&nbsp&nbsp&nbsp<img src="https://iili.io/2dBCd8J.png" width="8px" height="5px" class="icon">&nbsp</div></div>
-                    <div class="green1"><div class="oval-box1" ">FİYAT&nbsp&nbsp&nbsp&nbsp<img src="https://iili.io/2dBCd8J.png" width="8px" height="5px" class="icon">&nbsp</div></div>
-                    <div class="green1"><div class="oval-box2" ">ALIŞ/SATIŞ&nbsp&nbsp&nbsp&nbsp<img src="https://iili.io/2dBCd8J.png" width="8px" height="5px" class="icon">&nbsp</div></div>
+                    <div class="green1"><div class="oval-box1">ADET&nbsp&nbsp&nbsp&nbsp<img src="https://iili.io/2dBCd8J.png" width="8px" height="5px" class="icon">&nbsp</div></div>
+                    <div class="green1"><div class="oval-box1">FİYAT&nbsp&nbsp&nbsp&nbsp<img src="https://iili.io/2dBCd8J.png" width="8px" height="5px" class="icon">&nbsp</div></div>
+                    <div class="green1"><div class="oval-box2">ALIŞ/SATIŞ&nbsp&nbsp&nbsp&nbsp<img src="https://iili.io/2dBCd8J.png" width="8px" height="5px" class="icon">&nbsp</div></div>
                 </div>
             </div>
         </div> 
@@ -129,7 +128,7 @@
 
     <!-- Liste Alanı -->
     <div id="listContainer"></div>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br>
     <!-- İşlem Formu -->
     <div class="form-container">
         <label>İşlem Yapılacak Hisse:</label>
@@ -138,13 +137,13 @@
         </select>
 
         <label>Sembol:</label>
-        <input type="text" id="symbolInput" placeholder="Örn: BMSTL">
+        <input type="text" id="symbolInput" value="BMSTL">
         
         <label>Sembol Bilgi:</label>
-        <input type="text" id="infoInput" placeholder="Örn: BMS BIRLESIK METAL">
+        <input type="text" id="infoInput" value="BMS BIRLESIK METAL">
         
         <label>Adet / Fiyat:</label>
-        <input type="text" id="priceInput" placeholder="Örn: 4.200,00">
+        <input type="text" id="priceInput" placeholder="Örn: 25000">
         
         <label>Maliyet:</label>
         <input type="text" id="costInput" placeholder="Örn: 48,680">
@@ -164,6 +163,20 @@
     };
     
     let activeCat = 'bekleyen';
+
+    // Rakam Formatlama Fonksiyonu (25000 -> 25.000,00)
+    function formatCurrency(value) {
+        if (!value) return "0,00";
+        // Varsa eski noktaları kaldır, virgülü noktaya çevir ki sayıya dönüşebilsin
+        let cleanValue = value.toString().replace(/\./g, '').replace(',', '.');
+        let num = parseFloat(cleanValue);
+        if (isNaN(num)) return value; 
+        
+        return num.toLocaleString('tr-TR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
 
     // Kategoriler arası geçiş
     function toggleCategoryMenu(e) {
@@ -199,26 +212,19 @@
         container.innerHTML = '';
         selector.innerHTML = '<option value="NEW_STOCK">-- YENİ EKLE --</option>';
 
-        // Boş liste kontrolü
         if (db[activeCat].length === 0) {
-            // Hiç hisse yoksa başlık barını gizle
             headerBar.style.display = 'none';
-            
             let msg = "";
             if (activeCat === 'bekleyen') msg = "Bekleyen Emriniz bulunmamaktadır. <br> İşlem yaptığınız hisseleri buradan <br>yönetebilirsiniz.";
             if (activeCat === 'gerceklesen') msg = "Gerçekleşen Emriniz bulunmamaktadır. <br>İşlem yaptığınız hisseleri buradan <br>yönetebilirsiniz.";
             if (activeCat === 'iptal') msg = "İptal Emriniz bulunmamaktadır. <br>İşlem yaptığınız hisseleri buradan <br>yönetebilirsiniz.";
-            
             container.innerHTML = `<div class="empty-message">${msg}</div>`;
         } else {
-            // Hisse varsa başlık barını göster
             headerBar.style.display = 'block';
-
             db[activeCat].forEach((item, i) => {
                 const type = item.type || 'A';
                 const asClass = type === 'A' ? 'box-a' : 'box-s';
                 
-                // Liste elemanı oluştur
                 const html = `
                     <div class="portfolio" style="border-bottom: 1px solid #eee">
                         <div class="table5"> 
@@ -239,7 +245,6 @@
                     </div>`;
                 container.insertAdjacentHTML('beforeend', html);
 
-                // Selectbox'a ekle
                 const opt = document.createElement('option');
                 opt.value = i;
                 opt.text = item.s;
@@ -248,7 +253,6 @@
         }
     }
 
-    // Selectbox değiştiğinde veriyi forma çek
     function loadSelectedStock() {
         const val = document.getElementById('stockSelector').value;
         const dBtn = document.getElementById('deleteBtn');
@@ -266,11 +270,10 @@
         }
     }
 
-    // Kaydet veya Güncelle butonu fonksiyonu
     function saveOrUpdate() {
         const s = document.getElementById('symbolInput').value.trim();
         const i = document.getElementById('infoInput').value.trim();
-        const p = document.getElementById('priceInput').value.trim();
+        let p = document.getElementById('priceInput').value.trim();
         const c = document.getElementById('costInput').value.trim();
         const selIdx = document.getElementById('stockSelector').value;
 
@@ -279,8 +282,11 @@
             return;
         }
 
+        // Fiyatı formatla
+        const formattedPrice = formatCurrency(p);
+
         const existingType = (selIdx !== 'NEW_STOCK') ? db[activeCat][selIdx].type : 'A';
-        const obj = { s: s.toUpperCase(), i: i, p: p, c: c, type: existingType };
+        const obj = { s: s.toUpperCase(), i: i, p: formattedPrice, c: c, type: existingType };
 
         if (selIdx === 'NEW_STOCK') {
             db[activeCat].unshift(obj);
@@ -310,8 +316,8 @@
     }
 
     function clearInputs() {
-        document.getElementById('symbolInput').value = '';
-        document.getElementById('infoInput').value = '';
+        document.getElementById('symbolInput').value = 'BMSTL';
+        document.getElementById('infoInput').value = 'BMS BIRLESIK METAL';
         document.getElementById('priceInput').value = '';
         document.getElementById('costInput').value = '';
         document.getElementById('stockSelector').value = 'NEW_STOCK';
@@ -326,5 +332,3 @@
 </script>
 </body>
 </html>
-
-
