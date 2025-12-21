@@ -5,482 +5,315 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portföy Sayfası</title>
     <style>
-    body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f0f0f0;
+    /* Orijinal Arayüz Stilleri */
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f0f0f0; }
+    .header { background-color: #0d2238; color: white; padding: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 16px; }
+	.header h1 { font-size: 14px; margin: 0; }
+	.tabs { display: flex; justify-content: space-around; padding: 10px 0; border-bottom: 1px solid #ccc; background-color: #0d2238; position: relative; }
+	.tabs .tab { background: none; border: none; font-size: 12px; cursor: pointer; padding: 0px; position: relative; }
+	.tabs .active { font-weight: bold; color: #00BFFF; }
+	.tabs .notactive { font-weight: bold; color: #f9f9f9; }
+    
+    /* Aktif Sekme Altındaki Beyaz Üçgen */
+    .triangle {
+        width: 0;
+        height: 0;
+        border-left: 7px solid transparent;
+        border-right: 7px solid transparent;
+        border-bottom: 7px solid white;
+        position: absolute;
+        bottom: -13px;
+        left: 50%;
+        transform: translateX(-50%);
     }
-		
-    .header {
-    background-color: #0d2238;
-    color: white;
-    padding: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 16px;
-	}
-	.header h1 {
-    font-size: 14px;
-    margin: 0;
-	}
-	.tabs {
-    display: flex;
-    justify-content: space-around;
-    padding: 10px 0;
-    border-bottom: 1px solid #ccc;
-    background-color: #0d2238;
-	}
 
-	.tabs .tab {
-		background: none;
-		border: none;
-		font-size: 12px;
-		cursor: pointer;
-		padding: 0px;
-	}
+    .top-bar-alt { margin-left: 0px; margin-bottom: 5px; background-color: #f0f0f0; text-align: center; }
+    .portfolio { background-color: white; margin: 0px; padding: 5px 10px 5px 10px; border-radius: 0px; }
+	.portfolio2 { background-color: #f0f0f0; margin: 0px; padding: 5px 5px 5px 0px; border-radius: 0px; }
+    .symbol { padding: 5px 0; font-weight: bold; font-size: 16px; text-align: left; width:130px; }
+    .symbolinfo { color: gray; font-size: 8.5px; margin-top: 0; text-align: left; }
+    .sub-info { color: gray; font-size: 10px; margin-top: 0; text-align: right; }
+    .value { font-weight: bold; font-size: 16px; text-align: left; width:95px; }
+    .value1 { font-weight: bold; font-size: 16px; text-align: left; width:105px; }
+    .greensagkutu { color: green; font-weight: bold; font-size: 10px; text-align: right; width:50px; }
+    .green1 { color: black; font-size: 10px; text-align: right; width:100px; padding: 5px 0 5px 10px; }
+    .green2 { color: gray; font-size: 10px; text-align: left; width:170px; padding-left: 10px; }
+    .green1bb { font-weight: bold; color: black; font-size: 11px; text-align: left; width:450px; }
+    .green1sagok { color: gray; font-size: 10px; text-align: right; padding-right: 5px; width:50px; }
+    .table, .table2, .table5 { width: 100%; display: table;  }
+    .table div, .table2 div, .table5 div { display: table-row; }
+    .table div div, .table2 div div, .table5 div div { display: table-cell; }
+    
+    .oval-box { display: inline-block; color: gray; width: 500px; height: 30px; background-color: white; border-radius: 5px; text-align: center; line-height: 30px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); margin-left: 10px; font-size: 11px; border: 1px solid lightgray; cursor: pointer; position: relative; }     
+    .oval-box1, .oval-box2 { display: inline-block; color: gray; width: 80px; height: 20px; background-color: white; border-radius: 15px; text-align: center; line-height: 20px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); margin-left: 10px; font-size: 9px; }
+    
+    /* A/S Kutuları Stilleri */
+    .as-box { display: inline-block; width: 15px; height: 15px; border-radius: 2px; text-align: center; line-height: 15px; font-size: 10px; float: right; cursor: pointer; font-weight: bold; }
+    .box-a { background-color: #c7fccb; color: green; }
+    .box-s { background-color: #fcc7c7; color: red; }
 
-	.tabs .active {
-		font-weight: bold;
-		color: #00BFFF;
-	}
-	.tabs .notactive {
-		font-weight: bold;
-		color: #f9f9f9;
-	}
-		.top-bar-alt {
-			margin-left: 0px;
-			margin-bottom: 5px;
+    /* Boş Liste Mesajı Stili */
+    .empty-message { padding: 20px 60px; text-align: center; color: #666; font-size: 14px; background: white; line-height: 1.6; border-top: 1px solid #eee; }
 
-            background-color: #f0f0f0;
-			text-align: center;
-        }
+    /* Açılır Menü Tasarımı */
+    #catMenu { display: none; position: absolute; background: white; width: 100%; border: 1px solid #ccc; z-index: 100; top: 32px; left: 0; box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
+    #catMenu div { padding: 10px; border-bottom: 1px solid #eee; text-align: left; color: black; }
+    #catMenu div:hover { background: #f0f0f0; }
 
-
-        .portfolio {
-            background-color: white;
-            margin: 0px;
-            padding: 5px 10px 5px 10px; /*üst sağ alt sol*/
-            border-radius: 0px;
-
-        }
-		.portfolio2 {
-            background-color: #f0f0f0;
-            margin: 0px;
-            padding: 5px 5px 5px 0px; /*üst sağ alt sol*/
-            border-radius: 0px;
-
-        }
-
-        .symbol {
-		padding: 5px 0;
-            font-weight: bold;
-            font-size: 16px;
-            text-align: left;
-			width:130px;
-        }
-        .symbolinfo {
-            color: gray;
-            font-size: 8.5px;
-            margin-top: 0;
-            text-align: left;
-
-        }
-        .sub-info {
-            color: gray;
-            font-size: 10px;
-            margin-top: 0;
-            text-align: right;
-        }
-        .value {
-            font-weight: bold;
-            font-size: 16px;
-            text-align: left;
-			width:95px;
-        }.value1 {
-            font-weight: bold;
-            font-size: 16px;
-            text-align: left;
-			width:105px;
-        }
-		    .triangle {
-            width: 0;
-            height: 0;
-            border-left: 10px solid transparent;
-            border-right: 10px solid transparent;
-            border-bottom: 7px solid white;
-            position: absolute;
-            top: 80px; /* Hisse başlığına göre yukarıdan konumlandırma */
-            left: 25%; /* Ortalamak için */
-            transform: translateX(-50%);
-        }
-        .greensagkutu {
-            color: green;
-            font-weight: bold;
-            font-size: 10px;
-            text-align: right;
-	    width:50px;
-        }
-		
-		.green1 {
-			color: black;
-            font-size: 10px;
-            text-align: right;
-			width:100px;
-		padding-left: 10px;
-		padding-top:5px;
-		padding-bottom:5px;
-        }
-		.green1k {
-			color: black;
-            font-size: 6px;
-            text-align: right;
-			width:100px;
-		padding-left: 10px;
-        }
-		.green2 {
-			color: gray;
-            font-size: 10px;
-            text-align: left;
-			width:170px;
-padding-left: 10px;
-        }
-		.green1bb {
-		font-weight: bold;
-			color: black;
-            font-size: 11px;
-            text-align: left;
-			width:450px;
-		padding-left: 10px;
-		padding-top:0px;
-		padding-bottom:0px;
-        }
-		.green1sagok {
-			color: gray;
-            font-size: 10px;
-            text-align: right;
-			Padding-right: 5px;
-			width:50px;
-        }
-
-        .form-container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .form-container label {
-            display: block;
-            margin-bottom: 8px;
-        }
-        .form-container input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        .form-container button[type="button"] {
-            padding: 10px 20px;
-            background-color: #0d2238;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .table {
-            width: 100%;
-            display: table;
-
-			padding-right: 10px;
-			background: white;
-	   
-        }
-        .table div {
-            display: table-row;
-        }
-        .table div div {
-            display: table-cell;
-        }
-        .table div div.th {
-            font-weight: bold;
-            text-align: right;
-        }.table2 {
-            width: 100%;
-            display: table;
-
-
-        }
-        .table2 div {
-            display: table-row;
-        }
-        .table2 div div {
-            display: table-cell;
-        }
-        .table2 div div.th {
-            font-weight: bold;
-            text-align: right;
-        }.table5 {
-            width: 100%;
-            display: table;
-
-        }
-        .table5 div {
-            display: table-row;
-        }
-        .table5 div div {
-            display: table-cell;
-        }
-        .table5 div div.th {
-            font-weight: bold;
-            text-align: right;
-        }
-		.icons button {
-			
-			background: none;
-			border: none;
-			color: #00BFFF;
-			font-size: 20px;
-			font-weight: bold;
-			cursor: pointer;
-			text-align: right;
-		}
-		.icons2 button {
-			
-			background: none;
-			border: none;
-			color: #0d2238;
-			font-size: 12px;
-			font-weight: bold;
-			cursor: pointer;
-			text-align: right;
-		} 
-		.oval-box {
-		
-		display: inline-block;
-		color: gray;
-		width: 500px;
-		height: 30px;
-		background-color: white;
-		border-radius: 5px;
-		text-align: center;
-		line-height: 30px;
-		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-		margin-left: 10px;
-		font-size: 11px;
-		border: 1px solid lightgray; /* İnce gri çizgi için eklenen kısım */
-		}     
-		.oval-box1 {
-            display: inline-block;
-			color: gray;
-            width: 80px; /* Genişliği ayarlayabilirsiniz */
-            height: 20px;
-            background-color: white;
-            border-radius: 15px; /* Oval görünüm */
-            text-align: center;
-            line-height: 20px; /* Dikey ortalama için */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Hafif gölge */
-            margin-left: 10px;
-            font-size: 9px;
-
-
-        }.oval-box2 {
-            display: inline-block;
-			color: gray;
-            width: 80px; /* Genişliği ayarlayabilirsiniz */
-            height: 20px;
-            background-color: white;
-            border-radius: 15px; /* Oval görünüm */
-            text-align: center;
-            line-height: 20px; /* Dikey ortalama için */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Hafif gölge */
-            margin-left: 10px;
-            font-size: 8px;
-
-
-        }.oval-box5 {
-    display: inline-block;
-    width: 15px;
-    height: 15px;
-    background-color: #c7fccb;
-    border-radius: 2px;
-    text-align: center;
-    line-height: 15px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin-left: 5px;
-    font-size: 10px;
-    float: right; /* Added to move the element to the right */
-}
-        #fullscreen-btn {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #008CBA;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        #fullscreen-btn:hover {
-            background-color: #007B9E;
-        }
-
-
+    /* Form Tasarımı */
+    .form-container { background-color: white; padding: 20px; border-top: 2px solid #0d2238; margin-top: 10px; }
+    .form-container label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 12px; color: #333; }
+    .form-container input, .form-container select { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+    .btn-group { display: flex; gap: 10px; }
+    .update-btn { flex: 2; padding: 12px; background-color: #0d2238; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+    .delete-btn { flex: 1; padding: 12px; background-color: #a30000; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; display: none; }
     </style>
 </head>
 <body>
 
-
     <div class="header">
 		<div class="icons">
-		<button class="nav"><a href="index.html"><img src="https://iili.io/2dBC2yv.png" width="15px" height="13px" class="icon"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
+		    <button style="background:none; border:none;"><img src="https://iili.io/2dBC2yv.png" width="15px" height="13px"></button>
 		</div>
 		<h1>GÜNLÜK İŞLEMLER</h1>
 		<div class="icons">
-            <button class="nav"><button onclick="sayfayiYenile()">&#x21bb;</button>&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://iili.io/2dBCFuR.png" width="15px" height="13px" class="icon"></button>
+            <button style="background:none; border:none; color: #00BFFF; font-size: 20px;" onclick="location.reload()">&#x21bb;</button>
+            <img src="https://iili.io/2dBCFuR.png" width="15px" height="13px">
         </div>
     </div>
-	<script>
-        function sayfayiYenile() {
-            location.reload();
-        }
-    </script>
-	    <div class="tabs">
-        <button class="tab notactive">Hisse</button>
-		<div class="triangle"></div>
-        <button class="tab active">VİOP</button>
+
+    <div class="tabs">
+        <button class="tab active">
+            Hisse
+            <div class="triangle"></div>
+        </button>
+        <button class="tab notactive">VİOP</button>
     </div>
 
-			<div class="top-bar-alt">
-			
-			<div class="portfolio">
-			<div class="table"> 
-			<div>
-                <div class="oval-box">
-                <div class="green1bb" id="price1yok">Bekleyen&nbsp</div>
-		<div class="green1sagok"><img src="https://iili.io/2KVQmDg.png" width="12px" height="7px" class="icon">&nbsp</div>
-				
-             </div>   
-			</div>
-			</div>
-			</div>
-	        <div class="portfolio2">
-			<div class="table2"> 
-			<div>
-                <div class="green2">SEMBOL</div>
-                <div class="green1"><div class="oval-box1" ">ADET&nbsp&nbsp&nbsp&nbsp<img src="https://iili.io/2dBCd8J.png" width="8px" height="5px" class="icon">&nbsp</div></div>
-				
-                <div class="green1"><div class="oval-box1" ">FİYAT&nbsp&nbsp&nbsp&nbsp<img src="https://iili.io/2dBCd8J.png" width="8px" height="5px" class="icon">&nbsp</div></div>
-				
-                <div class="green1"><div class="oval-box2" ">ALIŞ/SATIŞ&nbsp&nbsp&nbsp&nbsp<img src="https://iili.io/2dBCd8J.png" width="8px" height="5px" class="icon">&nbsp</div></div>
+    <div class="top-bar-alt">
+        <div class="portfolio">
+            <div class="table"> 
+                <div>
+                    <div class="oval-box" onclick="toggleCategoryMenu(event)">
+                        <div class="green1bb" id="currentCatLabel">&nbsp;&nbsp;Bekleyen&nbsp;</div>
+                        <div class="green1sagok"><img src="https://iili.io/2KVQmDg.png" width="12px" height="7px"></div>
+                        <div id="catMenu">
+                            <div onclick="switchCategory(event, 'bekleyen')">&nbsp;&nbsp;Bekleyen</div>
+                            <div onclick="switchCategory(event, 'gerceklesen')">&nbsp;&nbsp;Gerçekleşen</div>
+                            <div onclick="switchCategory(event, 'iptal')">&nbsp;&nbsp;İptal</div>
+                        </div>
+                    </div>   
+                </div>
             </div>
-			</div>
-			</div> 
-			</div> 
-
-    <div class="portfolio">
-        <div class="table5"> 
-            <div>
-                <div class="symbol" id="symbol1">BMSTL</div>
-                <div class="value" id="price1">4.200,00</div>
-                <div class="value1" id="cost1">48,680</div>
-                <div class="greensagkutu" id="profit1"><div class="oval-box5" ">A&nbsp</div></div>
+        </div>
+        <div class="portfolio2" id="columnHeaderBar">
+            <div class="table2"> 
+                <div>
+                    <div class="green2">SEMBOL</div>
+                    <div class="green1"><div class="oval-box1" ">ADET&nbsp&nbsp&nbsp&nbsp<img src="https://iili.io/2dBCd8J.png" width="8px" height="5px" class="icon">&nbsp</div></div>
+                    <div class="green1"><div class="oval-box1" ">FİYAT&nbsp&nbsp&nbsp&nbsp<img src="https://iili.io/2dBCd8J.png" width="8px" height="5px" class="icon">&nbsp</div></div>
+                    <div class="green1"><div class="oval-box2" ">ALIŞ/SATIŞ&nbsp&nbsp&nbsp&nbsp<img src="https://iili.io/2dBCd8J.png" width="8px" height="5px" class="icon">&nbsp</div></div>
+                </div>
             </div>
-            <div>
-                <div class="symbolinfo" id="symbolinfo1">BMS BIRLESIK METAL</div>
-                <div class="sub-info" id="amount1"> </div>
-                <div class="sub-info" id="t21"> </div>
-                <div class="sub-info" id="sold1">Yeni</div>
-            </div>
-        </div>  
-
-
+        </div> 
     </div>
-	<br><br><br><center>
-<button id="fullscreen-btn" onclick="toggleFullscreen()">Tam Ekran</button></center>
 
-    <script>
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch((err) => {
-                    alert(`Tam ekran moduna geçilemedi: ${err.message}`);
-                });
-            } else {
-                document.exitFullscreen();
-            }
-        }
-    </script>
-<div class="form-container">
-    <form id="updateForm">
-        <label for="symbol">Sembol:</label>
-        <input type="text" id="symbol" name="symbol" value="BMSTL" required>
-		
-		<label for="symbol_i">Sembol İnfo:</label>
-        <input type="text" id="symbol_i" name="symbolinfo" value="BMS BIRLESIK METAL" required>
-		
-        <label for="price">Fiyat:</label>
-        <input type="text" id="price" name="price" value="4.200,00" step="0.01" required>
+    <!-- Liste Alanı -->
+    <div id="listContainer"></div>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <!-- İşlem Formu -->
+    <div class="form-container">
+        <label>İşlem Yapılacak Hisse:</label>
+        <select id="stockSelector" onchange="loadSelectedStock()">
+            <option value="NEW_STOCK">-- YENİ EKLE --</option>
+        </select>
 
-        <label for="cost">Maliyet:</label>
-        <input type="text" id="cost" name="cost" value="48,680" step="0.01" required>
+        <label>Sembol:</label>
+        <input type="text" id="symbolInput" placeholder="Örn: BMSTL">
+        
+        <label>Sembol Bilgi:</label>
+        <input type="text" id="infoInput" placeholder="Örn: BMS BIRLESIK METAL">
+        
+        <label>Adet / Fiyat:</label>
+        <input type="text" id="priceInput" placeholder="Örn: 4.200,00">
+        
+        <label>Maliyet:</label>
+        <input type="text" id="costInput" placeholder="Örn: 48,680">
 
-        <button type="button" onclick="updateValues()">Güncelle</button>
-    </form>
-</div>
+        <div class="btn-group">
+            <button type="button" class="update-btn" onclick="saveOrUpdate()">KAYDET / GÜNCELLE</button>
+            <button type="button" id="deleteBtn" class="delete-btn" onclick="removeStock()">SİL</button>
+        </div>
+    </div>
+
 <script>
-    function updateValues() {
-    // Formdan yeni değerleri al
-    const newSymbol = document.getElementById('symbol').value;
-    const newSymbol_i = document.getElementById('symbol_i').value;
-    const newPrice = parseFloat(document.getElementById('price').value.replace(/\./g, '').replace(',', '.'));
-    const newCost = parseFloat(document.getElementById('cost').value.replace(/\./g, '').replace(',', '.'));
+    // Başlangıç Verileri
+    let db = JSON.parse(localStorage.getItem('portfolio_data_v2')) || {
+        bekleyen: [],
+        gerceklesen: [],
+        iptal: []
+    };
+    
+    let activeCat = 'bekleyen';
 
-    // Sayfadaki mevcut değerleri güncelle
-    document.getElementById('symbol1').innerText = newSymbol;
-    document.getElementById('symbolinfo1').innerText = newSymbol_i;
-    document.getElementById('price1').innerText = newPrice.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    document.getElementById('cost1').innerText = newCost.toLocaleString('tr-TR', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
-
-    // Verileri localStorage'a kaydet
-    localStorage.setItem('symbol', newSymbol);
-    localStorage.setItem('symbolinfo', newSymbol_i);
-    localStorage.setItem('price', newPrice.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
-    localStorage.setItem('cost', newCost.toLocaleString('tr-TR', { minimumFractionDigits: 3, maximumFractionDigits: 3 }));
-}
-
-
-function loadValues() {
-    // LocalStorage'dan verileri yükle
-    const savedSymbol = localStorage.getItem('symbol');
-    const savedSymbol_i = localStorage.getItem('symbolinfo');
-    const savedPrice = localStorage.getItem('price');
-    const savedCost = localStorage.getItem('cost');
-
-    // Eğer veriler varsa, form alanlarına ve sayfaya yerleştir
-    if (savedSymbol) {
-        document.getElementById('symbol').value = savedSymbol;
-        document.getElementById('symbol1').innerText = savedSymbol;
+    // Kategoriler arası geçiş
+    function toggleCategoryMenu(e) {
+        e.stopPropagation();
+        const m = document.getElementById('catMenu');
+        m.style.display = (m.style.display === 'block') ? 'none' : 'block';
     }
-    if (savedSymbol_i) {
-        document.getElementById('symbol_i').value = savedSymbol_i;
-        document.getElementById('symbolinfo1').innerText = savedSymbol_i;
-    }
-    if (savedPrice) {
-        document.getElementById('price').value = parseFloat(savedPrice.replace(/\./g, '').replace(',', '.')).toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        document.getElementById('price1').innerText = parseFloat(savedPrice.replace(/\./g, '').replace(',', '.')).toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    }
-    if (savedCost) {
-        document.getElementById('cost').value = parseFloat(savedCost.replace(/\./g, '').replace(',', '.')).toLocaleString('tr-TR', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
-        document.getElementById('cost1').innerText = parseFloat(savedCost.replace(/\./g, '').replace(',', '.')).toLocaleString('tr-TR', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
-    }
-}
 
+    function switchCategory(e, cat) {
+        e.stopPropagation();
+        activeCat = cat;
+        const names = {bekleyen: '&nbsp;&nbsp;Bekleyen', gerceklesen: '&nbsp;&nbsp;Gerçekleşen', iptal: '&nbsp;&nbsp;İptal'};
+        document.getElementById('currentCatLabel').innerHTML = names[cat] + '&nbsp;';
+        document.getElementById('catMenu').style.display = 'none';
+        refreshUI();
+        clearInputs();
+    }
 
+    // A/S Durumunu Değiştir
+    function toggleAS(idx) {
+        const currentType = db[activeCat][idx].type || 'A';
+        db[activeCat][idx].type = (currentType === 'A') ? 'S' : 'A';
+        persistOnly();
+        refreshUI();
+    }
 
-    // Sayfa yüklendiğinde verileri yükle
-    window.onload = loadValues;
+    // Listeyi ve Select kutusunu tazele
+    function refreshUI() {
+        const container = document.getElementById('listContainer');
+        const selector = document.getElementById('stockSelector');
+        const headerBar = document.getElementById('columnHeaderBar');
+        
+        container.innerHTML = '';
+        selector.innerHTML = '<option value="NEW_STOCK">-- YENİ EKLE --</option>';
+
+        // Boş liste kontrolü
+        if (db[activeCat].length === 0) {
+            // Hiç hisse yoksa başlık barını gizle
+            headerBar.style.display = 'none';
+            
+            let msg = "";
+            if (activeCat === 'bekleyen') msg = "Bekleyen Emriniz bulunmamaktadır. <br> İşlem yaptığınız hisseleri buradan <br>yönetebilirsiniz.";
+            if (activeCat === 'gerceklesen') msg = "Gerçekleşen Emriniz bulunmamaktadır. <br>İşlem yaptığınız hisseleri buradan <br>yönetebilirsiniz.";
+            if (activeCat === 'iptal') msg = "İptal Emriniz bulunmamaktadır. <br>İşlem yaptığınız hisseleri buradan <br>yönetebilirsiniz.";
+            
+            container.innerHTML = `<div class="empty-message">${msg}</div>`;
+        } else {
+            // Hisse varsa başlık barını göster
+            headerBar.style.display = 'block';
+
+            db[activeCat].forEach((item, i) => {
+                const type = item.type || 'A';
+                const asClass = type === 'A' ? 'box-a' : 'box-s';
+                
+                // Liste elemanı oluştur
+                const html = `
+                    <div class="portfolio" style="border-bottom: 1px solid #eee">
+                        <div class="table5"> 
+                            <div>
+                                <div class="symbol">${item.s}</div>
+                                <div class="value">${item.p}</div>
+                                <div class="value1">${item.c}</div>
+                                <div class="greensagkutu">
+                                    <div class="as-box ${asClass}" onclick="toggleAS(${i})">${type}</div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="symbolinfo">${item.i}</div>
+                                <div class="sub-info"></div><div class="sub-info"></div>
+                                <div class="sub-info">Yeni</div>
+                            </div>
+                        </div>  
+                    </div>`;
+                container.insertAdjacentHTML('beforeend', html);
+
+                // Selectbox'a ekle
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.text = item.s;
+                selector.add(opt);
+            });
+        }
+    }
+
+    // Selectbox değiştiğinde veriyi forma çek
+    function loadSelectedStock() {
+        const val = document.getElementById('stockSelector').value;
+        const dBtn = document.getElementById('deleteBtn');
+
+        if (val === 'NEW_STOCK') {
+            clearInputs();
+            dBtn.style.display = 'none';
+        } else {
+            const data = db[activeCat][val];
+            document.getElementById('symbolInput').value = data.s;
+            document.getElementById('infoInput').value = data.i;
+            document.getElementById('priceInput').value = data.p;
+            document.getElementById('costInput').value = data.c;
+            dBtn.style.display = 'block';
+        }
+    }
+
+    // Kaydet veya Güncelle butonu fonksiyonu
+    function saveOrUpdate() {
+        const s = document.getElementById('symbolInput').value.trim();
+        const i = document.getElementById('infoInput').value.trim();
+        const p = document.getElementById('priceInput').value.trim();
+        const c = document.getElementById('costInput').value.trim();
+        const selIdx = document.getElementById('stockSelector').value;
+
+        if (!s) {
+            alert("Lütfen Sembol giriniz.");
+            return;
+        }
+
+        const existingType = (selIdx !== 'NEW_STOCK') ? db[activeCat][selIdx].type : 'A';
+        const obj = { s: s.toUpperCase(), i: i, p: p, c: c, type: existingType };
+
+        if (selIdx === 'NEW_STOCK') {
+            db[activeCat].unshift(obj);
+        } else {
+            db[activeCat][selIdx] = obj;
+        }
+
+        persistAndReload();
+    }
+
+    function removeStock() {
+        const selIdx = document.getElementById('stockSelector').value;
+        if (selIdx !== 'NEW_STOCK' && confirm('Seçili hisseyi silmek istiyor musunuz?')) {
+            db[activeCat].splice(selIdx, 1);
+            persistAndReload();
+        }
+    }
+
+    function persistOnly() {
+        localStorage.setItem('portfolio_data_v2', JSON.stringify(db));
+    }
+
+    function persistAndReload() {
+        persistOnly();
+        refreshUI();
+        clearInputs();
+    }
+
+    function clearInputs() {
+        document.getElementById('symbolInput').value = '';
+        document.getElementById('infoInput').value = '';
+        document.getElementById('priceInput').value = '';
+        document.getElementById('costInput').value = '';
+        document.getElementById('stockSelector').value = 'NEW_STOCK';
+        document.getElementById('deleteBtn').style.display = 'none';
+    }
+
+    window.onclick = function() {
+        document.getElementById('catMenu').style.display = 'none';
+    }
+
+    window.onload = refreshUI;
 </script>
-
 </body>
 </html>
