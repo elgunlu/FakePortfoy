@@ -318,14 +318,14 @@
                     </div>
                 </div>
 
-                <!-- Detaylı Ara Yazısı ve Logo (Turuncu, Sola Yaslı, Büyüteç Solda) -->
-                <div class="flex items-center space-x-2 px-2 pt-2">
+                <!-- Detaylı Ara Yazısı (Tıklanabilir Toggle) -->
+                <div id="search-trigger" class="flex items-center space-x-2 px-2 pt-2 cursor-pointer group">
                     <i data-lucide="search" class="w-5 h-5 text-[#fcae01]"></i>
-                    <span class="text-[17px] text-[#fcae01] font-medium">Detaylı Ara</span>
+                    <span class="text-[17px] text-[#fcae01] font-medium group-active:opacity-70">Detaylı Ara</span>
                 </div>
 
                 <!-- 3. Kutu: Boş Durum -->
-                <div class="bg-white p-4 rounded-lg shadow-sm">
+                <div id="orders-empty-state" class="bg-white p-4 rounded-lg shadow-sm">
                     <div class="flex flex-col items-center justify-center py-10">
                         <div class="p-4 rounded-full mb-4 strike-container">
                             <i data-lucide="file-text" class="w-16 h-16 text-gray-800"></i>
@@ -333,6 +333,60 @@
                             <span class="strike-line"></span>
                         </div>
                         <p class="text-[17px] text-gray-800 font-medium">Bugüne ait emriniz bulunmamaktadır.</p>
+                    </div>
+                </div>
+
+                <!-- Detaylı Listeleme (Açıldığında) -->
+                <div id="orders-list-state" class="hidden space-y-4 pb-10">
+                    
+                    <!-- KUTU A: Özet Bilgiler -->
+                    <div class="bg-white p-4 rounded-lg shadow-sm space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[17px] text-gray-400 font-medium">Gerçekleşen Toplam Tutar</span>
+                            <span id="order-summary-done" class="text-[17px] text-gray-800 font-medium">0,00 TL</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-[17px] text-gray-400 font-medium">Bekleyen Toplam Tutar</span>
+                            <span id="order-summary-wait" class="text-[17px] text-gray-800 font-medium">0,00 TL</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-[17px] text-gray-400 font-medium">İptal Edilen Toplam Tutar</span>
+                            <span id="order-summary-cancel" class="text-[17px] text-gray-800 font-medium">0,00 TL</span>
+                        </div>
+                    </div>
+
+                    <!-- KUTU B: Hisse Detay (Hisse bazlı) -->
+                    <div id="dynamic-order-card" class="bg-white p-4 rounded-lg shadow-sm space-y-3">
+                        <!-- JS ile dolacak -->
+                    </div>
+
+                    <!-- DETAYLI ARA ÖZEL GÜNCELLEME FORMU -->
+                    <div id="order-detail-edit-form" class="bg-white p-4 rounded-lg shadow-md border-t-2 border-gray-800 space-y-4">
+                        <h3 class="text-sm font-bold text-gray-800 uppercase flex items-center">
+                            <i data-lucide="edit-3" class="w-4 h-4 mr-2"></i> Detaylı Veri Güncelleme
+                        </h3>
+                        
+                        <div class="space-y-2 border-b pb-3">
+                            <p class="text-[11px] font-bold text-gray-400">ÖZET TUTARLAR (1. KUTU)</p>
+                            <input type="text" id="edit-summary-done" placeholder="Gerçekleşen Toplam (Örn: 86050)" class="w-full p-2 border border-gray-200 rounded text-sm">
+                            <input type="text" id="edit-summary-wait" placeholder="Bekleyen Toplam" class="w-full p-2 border border-gray-200 rounded text-sm">
+                            <input type="text" id="edit-summary-cancel" placeholder="İptal Edilen Toplam" class="w-full p-2 border border-gray-200 rounded text-sm">
+                        </div>
+
+                        <div class="space-y-2">
+                            <p class="text-[11px] font-bold text-gray-400 flex justify-between items-center">
+                                <span>EMİR DETAYLARI (2. KUTU)</span>
+                                <span id="label-box2-total" class="text-[10px] text-gray-500 font-bold ml-2"></span>
+                            </p>
+                            <input type="text" id="edit-order-symbol" value="BMSTL.E" placeholder="Hisse Kodu (Örn: BMSTL.E)" class="w-full p-2 border border-gray-200 rounded text-sm font-bold">
+                            <input type="text" id="edit-order-qty" value="1" placeholder="Emir/Gerçekleşen Adet (Örn: 1)" class="w-full p-2 border border-gray-200 rounded text-sm">
+                            <input type="text" id="edit-order-price" value="86,05" placeholder="Emir Fiyat (Örn: 86,05)" class="w-full p-2 border border-gray-200 rounded text-sm">
+                            <input type="text" id="edit-order-status" value="Borsaya İletilecek" placeholder="Emir Durumu" class="w-full p-2 border border-gray-200 rounded text-sm">
+                        </div>
+
+                        <button onclick="updateOrderDetailFields()" class="w-full bg-gray-800 text-white font-bold py-2 rounded text-sm hover:bg-black transition">
+                            DEĞİŞİKLİKLERİ UYGULA
+                        </button>
                     </div>
                 </div>
 
@@ -344,16 +398,20 @@
     <script type="module">
         let stocks = {}; 
         let accountDetails = {}; 
+        let isDetailsVisible = false;
+
+        // Emirler sekmesine özel veri
+        let orderDetailState = {
+            summary: { done: '0,00 TL', wait: '0,00 TL', cancel: '0,00 TL' },
+            card: { symbol: 'BMSTL.E', qty: '1', price: '86,05 TL', status: 'Borsaya İletilecek' }
+        };
 
         const STOCK_KEY = 'portfolioStocks_v3';
         const ACCOUNT_DETAILS_KEY = 'portfolioAccountDetails_v3'; 
+        const ORDER_DETAIL_KEY = 'orderDetailState_v1';
         const IMAGE_URLS = ["https://i.imgur.com/LIvAA9i.png", "https://i.imgur.com/o8d9pDs.png", "https://i.imgur.com/SD90fP5.png"];
 
-        const defaultStocks = {
-            'BMSTL.E': { quantity: 1186.00, costPrice: 26.37, lastPrice: 82.90 },
-            'HKTM.E': { quantity: 2500.00, costPrice: 13.90, lastPrice: 12.40 }
-        };
-        
+        const defaultStocks = { 'BMSTL.E': { quantity: 1186.00, costPrice: 26.37, lastPrice: 82.90 }, 'HKTM.E': { quantity: 0, costPrice: 0, lastPrice: 0 } };
         const defaultAccountDetails = { borsaLimit: 0, t2Balance: 0, t1Balance: 0, tlBalance: 0, blokeBalance: 0 };
 
         const stockSelect = document.getElementById('stock-select');
@@ -372,6 +430,108 @@
         const statusIcon = document.getElementById('status-icon');
         const pageTitle = document.getElementById('page-title');
 
+        const searchTrigger = document.getElementById('search-trigger');
+        const ordersEmpty = document.getElementById('orders-empty-state');
+        const ordersList = document.getElementById('orders-list-state');
+        const dynamicOrderCard = document.getElementById('dynamic-order-card');
+
+        // Para Formatlayıcı
+        function formatCurrencyInput(val) {
+            if (!val) return "0,00 TL";
+            let cleanVal = val.toString().replace(',', '.').replace(/[^\d.]/g, '');
+            let floatVal = parseFloat(cleanVal);
+            if (isNaN(floatVal)) return "0,00 TL";
+            return floatVal.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' TL';
+        }
+
+        // Adet/Miktar Formatlayıcı
+        function formatQuantityInput(val) {
+            if (!val) return "0";
+            if (val.includes('/') || val.includes('-')) return val;
+            let cleanVal = val.toString().replace(',', '.').replace(/[^\d.]/g, '');
+            let floatVal = parseFloat(cleanVal);
+            if (isNaN(floatVal)) return val;
+            return floatVal.toLocaleString('tr-TR');
+        }
+
+        searchTrigger.addEventListener('click', () => {
+            isDetailsVisible = !isDetailsVisible;
+            if (isDetailsVisible) {
+                ordersEmpty.classList.add('hidden');
+                ordersList.classList.remove('hidden');
+                renderSingleOrder();
+            } else {
+                ordersEmpty.classList.remove('hidden');
+                ordersList.classList.add('hidden');
+            }
+        });
+
+        window.updateOrderDetailFields = function() {
+            // Özet Tutarlar (1. Kutu)
+            const doneVal = document.getElementById('edit-summary-done').value;
+            const waitVal = document.getElementById('edit-summary-wait').value;
+            const cancelVal = document.getElementById('edit-summary-cancel').value;
+            
+            if (doneVal) orderDetailState.summary.done = formatCurrencyInput(doneVal);
+            if (waitVal) orderDetailState.summary.wait = formatCurrencyInput(waitVal);
+            if (cancelVal) orderDetailState.summary.cancel = formatCurrencyInput(cancelVal);
+            
+            // Kart Bilgileri (2. Kutu)
+            orderDetailState.card.symbol = document.getElementById('edit-order-symbol').value || orderDetailState.card.symbol;
+            
+            const qtyInput = document.getElementById('edit-order-qty').value;
+            if (qtyInput) orderDetailState.card.qty = formatQuantityInput(qtyInput);
+            
+            const priceVal = document.getElementById('edit-order-price').value;
+            if (priceVal) orderDetailState.card.price = formatCurrencyInput(priceVal);
+            
+            orderDetailState.card.status = document.getElementById('edit-order-status').value || orderDetailState.card.status;
+
+            localStorage.setItem(ORDER_DETAIL_KEY, JSON.stringify(orderDetailState));
+            renderSingleOrder();
+        };
+
+        function renderSingleOrder() {
+            document.getElementById('order-summary-done').innerText = orderDetailState.summary.done;
+            document.getElementById('order-summary-wait').innerText = orderDetailState.summary.wait;
+            document.getElementById('order-summary-cancel').innerText = orderDetailState.summary.cancel;
+
+            // Fiyat ve adedi çarparak toplam tutarı hesapla
+            let rawQty = orderDetailState.card.qty.replace(/[^\d,.]/g, '').replace(',', '.');
+            let rawPrice = orderDetailState.card.price.replace(/[^\d,.]/g, '').replace(',', '.');
+            let totalRow = (parseFloat(rawQty) || 0) * (parseFloat(rawPrice) || 0);
+            let formattedRowTotal = totalRow.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' TL';
+
+            // Form içindeki başlığın yanına tutarı yazdır
+            const box2LabelTotal = document.getElementById('label-box2-total');
+            if(box2LabelTotal) box2LabelTotal.innerText = `[${formattedRowTotal}]`;
+
+            dynamicOrderCard.innerHTML = `
+                <div class="flex justify-between items-center border-b border-gray-100 pb-2 mb-2">
+                    <span class="font-bold text-lg text-gray-800">${orderDetailState.card.symbol}</span>
+                    <i data-lucide="chevron-right" class="w-6 h-6 text-gray-300"></i>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-[17px] text-gray-400 font-medium">Emir/Gerçekleşen Adet</span>
+                        <div class="flex items-center">
+                            <span class="text-[17px] text-gray-600 font-medium mr-2">${orderDetailState.card.qty}</span>
+                            
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-[17px] text-gray-400 font-medium">Emir Fiyat</span>
+                        <span class="text-[17px] text-gray-600 font-medium">${orderDetailState.card.price}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-[17px] text-gray-400 font-medium">Emir Durumu</span>
+                        <span class="text-[17px] text-gray-900 font-medium">${orderDetailState.card.status}</span>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
         window.switchTab = function(tab) {
             const btnP = document.getElementById('tab-btn-portfolio');
             const btnO = document.getElementById('tab-btn-orders');
@@ -383,13 +543,11 @@
                 btnO.className = "tab-button p-3 text-center w-1/2 hover:text-gray-700";
                 contentP.classList.add('active');
                 contentO.classList.remove('active');
-                pageTitle.textContent = "Hisse Portföy";
             } else {
                 btnO.className = "tab-button p-3 text-center w-1/2 text-black border-b-2 border-amber-500 font-bold";
                 btnP.className = "tab-button p-3 text-center w-1/2 hover:text-gray-700";
                 contentO.classList.add('active');
                 contentP.classList.remove('active');
-                pageTitle.textContent = "Hisse Portföy";
             }
             lucide.createIcons();
         };
@@ -417,6 +575,9 @@
             const storedAcc = localStorage.getItem(ACCOUNT_DETAILS_KEY);
             accountDetails = storedAcc ? JSON.parse(storedAcc) : defaultAccountDetails;
             
+            const storedOrders = localStorage.getItem(ORDER_DETAIL_KEY);
+            if (storedOrders) orderDetailState = JSON.parse(storedOrders);
+
             fillFormFields();
         }
 
@@ -448,33 +609,19 @@
                 totalPL += s.profitAmount;
             });
 
-            const tpvEl = document.getElementById('total-portfolio-value');
-            if (tpvEl) tpvEl.textContent = format(totalVal);
+            document.getElementById('total-portfolio-value').textContent = format(totalVal);
             
             const plEl = document.getElementById('total-profit-loss');
-            if (plEl) {
-                const isProfit = totalPL >= 0;
-                plEl.textContent = (isProfit ? '+' : '') + format(totalPL);
-                plEl.className = `text-lg font-bold ${isProfit ? 'text-green-600' : 'text-red-600'}`;
-            }
+            const isProfit = totalPL >= 0;
+            plEl.textContent = (isProfit ? '+' : '') + format(totalPL);
+            plEl.className = `text-lg font-bold ${isProfit ? 'text-green-600' : 'text-red-600'}`;
             
-            const blEl = document.getElementById('borsa-limit');
-            if (blEl) blEl.textContent = format(accountDetails.borsaLimit);
-            
-            const t2El = document.getElementById('t2-bakiyesi');
-            if (t2El) t2El.textContent = format(accountDetails.t2Balance);
-            
-            const t1El = document.getElementById('t1-bakiyesi');
-            if (t1El) t1El.textContent = format(accountDetails.t1Balance);
-            
-            const tlEl = document.getElementById('tl-bakiyesi');
-            if (tlEl) tlEl.textContent = format(accountDetails.tlBalance);
-            
-            const blokEl = document.getElementById('bloke-bakiyesi');
-            if (blokEl) blokEl.textContent = format(accountDetails.blokeBalance);
-
-            const orderLimitEl = document.getElementById('order-borsa-limit');
-            if (orderLimitEl) orderLimitEl.textContent = format(accountDetails.borsaLimit);
+            document.getElementById('borsa-limit').textContent = format(accountDetails.borsaLimit);
+            document.getElementById('t2-bakiyesi').textContent = format(accountDetails.t2Balance);
+            document.getElementById('t1-bakiyesi').textContent = format(accountDetails.t1Balance);
+            document.getElementById('tl-bakiyesi').textContent = format(accountDetails.tlBalance);
+            document.getElementById('bloke-bakiyesi').textContent = format(accountDetails.blokeBalance);
+            document.getElementById('order-borsa-limit').textContent = format(accountDetails.borsaLimit);
 
             Object.keys(stocks).forEach(code => {
                 const s = stocks[code];
@@ -483,11 +630,11 @@
                 const portPer = totalVal > 0 ? (s.totalValue / totalVal) * 100 : 0;
                 const sProfit = s.profitAmount >= 0;
 
-                const valEl = document.getElementById(`total-value-${code}`);
-                if (valEl) valEl.textContent = format(s.totalValue);
+                const cardValEl = document.getElementById(`total-value-${code}`);
+                if (cardValEl) cardValEl.textContent = format(s.totalValue);
                 
-                const quantEl = document.getElementById(`quantity-${code}`);
-                if (quantEl) quantEl.textContent = s.quantity.toLocaleString('tr-TR');
+                const qtyEl = document.getElementById(`quantity-${code}`);
+                if (qtyEl) qtyEl.textContent = s.quantity.toLocaleString('tr-TR');
                 
                 const costEl = document.getElementById(`cost-price-${code}`);
                 if (costEl) costEl.textContent = s.costPrice.toFixed(2).replace('.', ',') + ' TL';
@@ -495,11 +642,11 @@
                 const lastEl = document.getElementById(`last-price-${code}`);
                 if (lastEl) lastEl.textContent = s.lastPrice.toFixed(2).replace('.', ',') + ' TL';
                 
-                const portPerEl = document.getElementById(`portfolio-percent-${code}`);
-                if (portPerEl) portPerEl.textContent = `%${portPer.toFixed(2)}`;
+                const perEl = document.getElementById(`portfolio-percent-${code}`);
+                if (perEl) perEl.textContent = `%${portPer.toFixed(2)}`;
                 
-                const progressEl = document.getElementById(`progress-bar-${code}`);
-                if (progressEl) progressEl.style.width = `${portPer}%`;
+                const progEl = document.getElementById(`progress-bar-${code}`);
+                if (progEl) progEl.style.width = `${portPer}%`;
 
                 const cont = document.getElementById(`change-container-${code}`);
                 const icon = document.getElementById(`change-icon-${code}`);
@@ -507,18 +654,9 @@
                 if (cont && icon) {
                     cont.classList.remove('text-green-600', 'text-red-600');
                     cont.classList.add(sProfit ? 'text-green-600' : 'text-red-600');
-                    
-                    if (sProfit) {
-                        icon.classList.remove('rotate-180');
-                    } else {
-                        icon.classList.add('rotate-180');
-                    }
-                    
-                    const perEl = document.getElementById(`change-percent-${code}`);
-                    if (perEl) perEl.textContent = `%${sProfit ? '+' : ''}${plPer.toFixed(2).replace('.', ',')}`;
-                    
-                    const amntEl = document.getElementById(`change-amount-${code}`);
-                    if (amntEl) amntEl.textContent = `(${sProfit ? '+' : ''}${s.profitAmount.toLocaleString('tr-TR')} TL)`;
+                    sProfit ? icon.classList.remove('rotate-180') : icon.classList.add('rotate-180');
+                    document.getElementById(`change-percent-${code}`).textContent = `%${sProfit ? '+' : ''}${plPer.toFixed(2).replace('.', ',')}`;
+                    document.getElementById(`change-amount-${code}`).textContent = `(${sProfit ? '+' : ''}${s.profitAmount.toLocaleString('tr-TR')} TL)`;
                 }
             });
         }
@@ -565,6 +703,7 @@
             updatePortfolioView();
             setRandomStatusIcon();
             lucide.createIcons();
+            if (isDetailsVisible) renderSingleOrder();
         };
     </script>
 </body>
