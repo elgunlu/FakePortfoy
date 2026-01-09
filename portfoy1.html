@@ -170,68 +170,46 @@
         <div>Kapanış</div>
     </div>
 
-	
-<!-- Tablo için div yapısı -->
-<div class="portfolio">
     <div id="hisseTableBody"></div>
-</div>
-<br>
-<div class="form-container">
-    <form id="updateForm">
-        <div class="form-row">
-            <label for="hisseAd">Hisse Adı:</label>
-            <input type="text" id="hisseAd" required>
-        </div>
-        <div class="form-row">
-            <label for="hisseInfo">Hisse Bilgisi:</label>
-            <input type="text" id="hisseInfo">
-        </div>
-        <div class="form-row">
-            <label for="fiyat">Fiyat:</label>
-            <input type="text" id="fiyat" step="0.01" required>
-        </div>
-        <div class="form-row">
-            <label for="maliyet">Maliyet:</label>
-            <input type="text" id="maliyet" step="0.01" required>
-        </div>
-        <div class="form-row">
-            <label for="adet">Adet:</label>
-            <input type="text" id="adet" step="0.01" required>
-        </div>
-        <div class="form-row">
-            <label for="t2Adet">T2 Adet:</label>
-            <input type="text" id="t2Adet" step="0.01" required>
-        </div>
-        <div class="form-row">
-            <label for="sAdet">S.Adet:</label>
-            <input type="text" id="sAdet" step="0.01" required>
-        </div>
-        <select id="hisseSelect" onchange="hisseSec()">
-        <option value="">Bir hisse seçin</option>
-		</select>
-        <button type="button" onclick="ekleHisse()">Ekle</button>
-        <button type="button" onclick="guncelleHisse()">Güncelle</button>
-        <button type="button" onclick="silHisse()">Sil</button>
-		
-    </form>
-    
-</div>
 
+    <div class="total-row grid-layout">
+        <div class="total-label">Toplam</div>
+        <div id="totalProfit" class="total-value red">0,00</div>
+        <div></div>
+    </div>
 
-    <center><button id="fullscreen-btn" onclick="toggleFullscreen()">Tam Ekran</button>
+    <div class="form-container">
+        <div class="form-row">
+            <input type="text" id="hisseAd" placeholder="Hisse Kodu (Örn: THYAO)">
+            <input type="number" id="fiyat" placeholder="Son Fiyat" step="0.01">
+        </div>
+        <div class="form-row">
+            <input type="number" id="maliyet" placeholder="Maliyet" step="0.01">
+            <input type="number" id="adet" placeholder="Adet">
+        </div>
+        <select id="hisseSelect" onchange="hisseSec()" style="margin-bottom: 8px; width: 100%;">
+            <option value="">İşlem yapmak için hisse seçin</option>
+        </select>
+        <div class="btn-group">
+            <button class="btn-add" onclick="ekleHisse()">Ekle</button>
+            <button class="btn-upd" onclick="guncelleHisse()">Güncelle</button>
+            <button class="btn-del" onclick="silHisse()">Sil</button>
+        </div>
+        
+        <!-- Fiyat Güncelleme Butonu -->
+        <button class="btn-sync" onclick="fiyatlariCekMynet()">Mynet'ten Fiyatları Güncelle</button>
+        
+        <button class="btn-reset" onclick="verileriSifirla()">Verileri Sıfırla</button>
+    </div>
 
-    <script>
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch((err) => {
-                    alert(`Tam ekran moduna geçilemedi: ${err.message}`);
-                });
-            } else {
-                document.exitFullscreen();
-            }
-        }
-    </script>
+    <div style="height: 80px;"></div>
 
+    <div class="bottom-nav">
+        <div class="nav-item">☰<br>Ekranım</div>
+        <div class="nav-item">📈<br>Piyasalar</div>
+        <div class="nav-item">📰<br>Haberler</div>
+        <div class="nav-item active-nav">💼<br>Portföyüm</div>
+    </div>
 
 <script>
     let hisseler = [];
@@ -403,8 +381,5 @@
     // Fiyatları her 5 dakikada bir güncelle
     setInterval(guncelFiyatlariGetir, 300000);
 </script>
-
-
-
 </body>
 </html>
