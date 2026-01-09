@@ -214,39 +214,129 @@
 <script>
     let hisseler = [];
 
-    // Sayfa yüklendiğinde veriyi çek ve benzersiz id ataması yap
     document.addEventListener('DOMContentLoaded', () => {
-        const kayitliHisseler = localStorage.getItem('hisseler');
-        if (kayitliHisseler) {
-            hisseler = JSON.parse(kayitliHisseler).map((hisse, index) => ({
-                ...hisse,
-                id: hisse.id || `hisse-${index + 1}`
-            }));
-            kaydetVeGuncelle();
-        }
+        yukle();
     });
 
+    function yukle() {
+        const kayitliHisseler = localStorage.getItem('hisseler');
+        if (kayitliHisseler) {
+            hisseler = JSON.parse(kayitliHisseler);
+        } else {
+            hisseler = [];
+        }
+        tabloyuGuncelle();
+        hisseListesiniGuncelle();
+    }
+
+    // --- MYNET'TEN FİYAT ÇEKME FONKSİYONU ---
+    async function fiyatlariCekMynet() {
+        if (hisseler.length === 0) {
+            alert("Portföyünüzde hisse bulunmadığı için güncelleme yapılamıyor.");
+            return;
+        }
+
+        const loadingBar = document.getElementById("loadingBar");
+        loadingBar.style.display = "block";
+
+        try {
+            // portfoy1.html'deki gibi AllOrigins proxy kullanımı
+            const url = `https://api.allorigins.win/get?url=${encodeURIComponent('https://finans.mynet.com/borsa/hisseler/')}`;
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(data.contents, "text/html");
+            const rows = doc.querySelectorAll('table tbody tr');
+
+            let guncellenenSayisi = 0;
+
+            rows.forEach(row => {
+                const cell = row.querySelector('strong a');
+                if (cell) {
+                    const hisseKod = cell.textContent.trim();
+                    const fiyatMetni = row.querySelectorAll('td')[2]?.textContent.trim(); // 3. sütun fiyat
+                    const yeniFiyat = parseFloat(fiyatMetni.replace('.', '').replace(',', '.'));
+
+                    hisseler.forEach(h => {
+                        // Mynet'te hisseler genellikle THYAO şeklinde, bizdekiyle eşleştiriyoruz
+                        if (hisseKod === h.ad.toUpperCase()) {
+                            h.fiyat = yeniFiyat;
+                            guncellenenSayisi++;
+                        }
+                    });
+                }
+            });
+
+            kaydetVeGuncelle();
+            alert(`${guncellenenSayisi} adet hissenin fiyatı güncellendi.`);
+        } catch (error) {
+            console.error("Fiyat çekme hatası:", error);
+            alert("Fiyatlar çekilirken bir hata oluştu. Lütfen internet bağlantınızı kontrol edin.");
+        } finally {
+            loadingBar.style.display = "none";
+        }
+    }
+
+    function tabloyuGuncelle() {
+        const tableBody = document.getElementById("hisseTableBody");
+        tableBody.innerHTML = "";
+        let toplamKZ = 0;
+
+        hisseler.forEach((hisse) => {
+            const tlKarZarar = (hisse.fiyat - hisse.maliyet) * hisse.adet;
+            toplamKZ += tlKarZarar;
+            const kzClass = tlKarZarar < 0 ? "red" : "green";
+
+            const row = document.createElement("div");
+            row.classList.add("portfolio-row");
+            row.innerHTML = `
+                <div class="main-data grid-layout">
+                    <div class="col-symbol">${hisse.ad}</div>
+                    <div class="col-val">${hisse.maliyet.toFixed(2)}</div>
+                    <div class="col-val">${hisse.adet}</div>
+                    <div class="col-val ${kzClass}">${tlKarZarar.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                    <div class="col-val">${hisse.fiyat.toFixed(2)}</div>
+                </div>
+            `;
+            tableBody.appendChild(row);
+        });
+
+        const totalEl = document.getElementById("totalProfit");
+        if (totalEl) {
+            totalEl.innerText = toplamKZ.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            totalEl.className = `total-value ${toplamKZ < 0 ? "red" : "green"}`;
+        }
+    }
+
+    function getFormVerileri() {
+        return {
+            ad: document.getElementById("hisseAd").value.toUpperCase().trim(),
+            fiyat: parseFloat(document.getElementById("fiyat").value) || 0,
+            maliyet: parseFloat(document.getElementById("maliyet").value) || 0,
+            adet: parseInt(document.getElementById("adet").value) || 0,
+        };
+    }
+
     function ekleHisse() {
-        const hisse = { ...getFormVerileri(), id: `hisse-${Date.now()}` }; // Benzersiz id oluştur
+        const hisse = getFormVerileri();
+        if(!hisse.ad) { alert("Lütfen hisse kodu girin."); return; }
         hisseler.push(hisse);
         kaydetVeGuncelle();
     }
 
     function guncelleHisse() {
         const seciliHisseAd = document.getElementById("hisseSelect").value;
-        if (!seciliHisseAd) return alert("Güncellemek için bir hisse seçin.");
-        
         const index = hisseler.findIndex(h => h.ad === seciliHisseAd);
         if (index !== -1) {
-            hisseler[index] = { ...getFormVerileri(), id: hisseler[index].id };
+            hisseler[index] = getFormVerileri();
             kaydetVeGuncelle();
         }
     }
 
     function silHisse() {
         const seciliHisseAd = document.getElementById("hisseSelect").value;
-        if (!seciliHisseAd) return alert("Silmek için bir hisse seçin.");
-        
+        if(!seciliHisseAd) return;
         hisseler = hisseler.filter(h => h.ad !== seciliHisseAd);
         kaydetVeGuncelle();
     }
@@ -258,128 +348,45 @@
         formuTemizle();
     }
 
-    function tabloyuGuncelle() {
-        const tableBody = document.getElementById("hisseTableBody");
-        tableBody.innerHTML = "";
-        hisseler.forEach((hisse) => {
-            const row = document.createElement("div");
-            row.classList.add("table");
-            const karZararRenk = hisse.karZarar < 0 ? "red" : "green";
-            row.innerHTML = `
-                <div id="${hisse.id}">
-                    <div class="symbol">${hisse.ad}</div>
-                    <div class="value fiyat">${hisse.fiyat.toLocaleString('tr-TR', { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</div>
-                    <div class="value">${hisse.maliyet.toLocaleString('tr-TR', { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</div>
-                    <div class="${karZararRenk}">${hisse.karZarar}</div>
-                </div>
-                <div>
-                    <div class="symbolinfo">${hisse.info}</div>
-                    <div class="sub-info">Adet: ${hisse.adet.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-                    <div class="sub-info">T2: ${hisse.t2Adet.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-                    <div class="sub-info">S. Adet: ${hisse.sAdet}</div>
-                </div>
-            `;
-            tableBody.appendChild(row);
-        });
-    }
-
-    function getFormVerileri() {
-        const ad = document.getElementById("hisseAd").value;
-        const info = document.getElementById("hisseInfo").value;
-        const fiyat = parseFloat(document.getElementById("fiyat").value);
-        const maliyet = parseFloat(document.getElementById("maliyet").value);
-        const adet = parseInt(document.getElementById("adet").value);
-        const t2Adet = parseInt(document.getElementById("t2Adet").value) || 0;
-        const sAdet = parseInt(document.getElementById("sAdet").value) || 0;
-        const karZarar = ((fiyat - maliyet) / maliyet * 100).toFixed(2);
-        return { ad, info, fiyat, maliyet, adet, t2Adet, sAdet, karZarar };
-    }
-
-    function hisseSec() {
-        const seciliHisseAd = document.getElementById("hisseSelect").value;
-        if (seciliHisseAd === "") return formuTemizle();
-        const hisse = hisseler.find(h => h.ad === seciliHisseAd);
-        if (hisse) formuDoldur(hisse);
-    }
-
-    function formuDoldur(hisse) {
-        document.getElementById("hisseAd").value = hisse.ad;
-        document.getElementById("hisseInfo").value = hisse.info;
-        document.getElementById("fiyat").value = hisse.fiyat;
-        document.getElementById("maliyet").value = hisse.maliyet;
-        document.getElementById("adet").value = hisse.adet;
-        document.getElementById("t2Adet").value = hisse.t2Adet;
-        document.getElementById("sAdet").value = hisse.sAdet;
-    }
-
     function formuTemizle() {
-        document.getElementById("updateForm").reset();
+        document.getElementById("hisseAd").value = "";
+        document.getElementById("fiyat").value = "";
+        document.getElementById("maliyet").value = "";
+        document.getElementById("adet").value = "";
     }
 
     function hisseListesiniGuncelle() {
         const select = document.getElementById("hisseSelect");
-        select.innerHTML = '<option value="">Bir hisse seçin</option>';
-        hisseler.forEach(hisse => {
-            const option = document.createElement("option");
-            option.value = hisse.ad;
-            option.textContent = hisse.ad;
-            select.appendChild(option);
-        });
+        if (select) {
+            select.innerHTML = '<option value="">İşlem yapmak için hisse seçin</option>';
+            hisseler.forEach(h => {
+                const opt = document.createElement("option");
+                opt.value = h.ad; opt.textContent = h.ad;
+                select.appendChild(opt);
+            });
+        }
     }
 
-	document.addEventListener('DOMContentLoaded', () => {
-        console.log("Sayfa yüklendi. Hisse fiyatlarını çekme işlemi başlıyor...");
-        guncelFiyatlariGetir();
-    });
-	
-    async function guncelFiyatlariGetir() {
-    console.log("Hisse fiyatı çekme işlemi başladı.");
-    try {
-        console.log("Mynet sitesine istek gönderiliyor...");
-        const response = await fetch('https://finans.mynet.com/borsa/hisseler/');
-        console.log("Sayfa başarılı bir şekilde yüklendi.");
-        const text = await response.text();
-        console.log("Sayfa içeriği ayrıştırılıyor...");
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(text, 'text/html');
-        console.log("Tablo satırları seçiliyor...");
-        const rows = doc.querySelectorAll('tr');
-
-        rows.forEach(row => {
-            try {
-                const hisseKod = row.querySelector('strong a')?.textContent.trim(); // Hisse kodu
-                const fiyatMetni = row.querySelectorAll('td')[2]?.textContent.trim(); // 3. sütundaki fiyat verisi
-                const yeniFiyat = parseFloat(fiyatMetni.replace(',', '.'));
-
-                if (hisseKod) {
-                    console.log(`Hisse kodu: ${hisseKod} bulundu.`);
-                    
-                    // Hisseyi mevcut hisseler içinde bul
-                    hisseler.forEach(hisse => {
-                        // -CARI kısmını kaldırarak karşılaştırma yapıyoruz
-                        const temizAd = hisse.ad.replace('-CARI', '');
-                        if (hisseKod.includes(temizAd)) {
-                            console.log(`${hisseKod} güncelleniyor...`);
-                            hisse.fiyat = yeniFiyat; // Yeni fiyatı tabloya ata
-                            hisse.karZarar = ((yeniFiyat - hisse.maliyet) / hisse.maliyet * 100).toFixed(2); // Kar zarar güncelle
-                        }
-                    });
-                }
-            } catch (err) {
-                console.error("Bir hata oluştu:", err);
-            }
-        });
-
-        kaydetVeGuncelle(); // Güncellenmiş fiyatları kaydet ve güncelle
-    } catch (error) {
-        console.error("Hata: Fiyat çekme işlemi başarısız oldu.", error);
+    function hisseSec() {
+        const seciliAd = document.getElementById("hisseSelect").value;
+        const hisse = hisseler.find(h => h.ad === seciliAd);
+        if (hisse) {
+            document.getElementById("hisseAd").value = hisse.ad;
+            document.getElementById("fiyat").value = hisse.fiyat;
+            document.getElementById("maliyet").value = hisse.maliyet;
+            document.getElementById("adet").value = hisse.adet;
+        }
     }
-}
 
-
-
-    // Fiyatları her 5 dakikada bir güncelle
-    setInterval(guncelFiyatlariGetir, 300000);
+    function verileriSifirla() {
+        if(confirm("Tüm kayıtlı hisse bilgileriniz silinecek. Emin misiniz?")) {
+            localStorage.removeItem('hisseler');
+            hisseler = [];
+            tabloyuGuncelle();
+            hisseListesiniGuncelle();
+            alert("Tüm veriler temizlendi.");
+        }
+    }
 </script>
 </body>
 </html>
