@@ -10,7 +10,7 @@
             margin: 0;
             padding: 0;
             background-color: #ffffff;
-            padding-bottom: 70px; /* Alt navigasyon için boşluk */
+            padding-bottom: 70px;
         }
 
         /* Üst Başlık */
@@ -24,7 +24,7 @@
         .header h1 {
             flex: 1;
             text-align: center;
-            font-size: 21px;
+            font-size: 19px; 
             margin: 0;
             font-weight: bold;
             cursor: pointer;
@@ -32,7 +32,7 @@
         }
         .back-icon { font-size: 20px; cursor: pointer; padding: 5px; display: flex; align-items: center; }
 
-        /* Izgara Yapısı (Grid Layout) */
+        /* Izgara Yapısı */
         .grid-layout {
             display: grid;
             grid-template-columns: 1.2fr 0.8fr 1fr 1fr 1fr 0.8fr;
@@ -51,9 +51,9 @@
         }
         .table-header-tabs div {
             padding: 10px 0;
-            font-size: 17px;
+            font-size: 15px; 
             color: #666;
-            font-weight: bold;
+            font-weight: normal;
             cursor: pointer;
         }
         .table-header-tabs .active-tab {
@@ -63,26 +63,33 @@
 
         /* Sütun Başlıkları */
         .table-header {
-            font-size: 15px;
+            font-size: 13px; 
             color: #888;
             border-bottom: 1px solid #eee;
             background: #fff;
         }
 
-        /* Hisse Satırları */
+        /* Hisse Satırları Genel Ayarlar */
         .portfolio-row {
             border-bottom: 1px solid #eee;
-            font-size: 17px;
+            font-size: 15px; 
+            /* DEĞİŞİKLİK: Satırın genelini normal yapıyoruz */
+            font-weight: normal; 
         }
         
         /* Renk Sınıfları */
-        .row-buy { color: #5cb85c; font-weight: bold; }
-        .row-sell { color: #d9534f; font-weight: bold; }
-        .col-symbol { color: inherit; } 
+        .row-buy { color: #5cb85c; }
+        .row-sell { color: #d9534f; }
 
-        /* Süre sütunu için hizalama ve SVG noktaları */
+        /* DEĞİŞİKLİK: Sadece sembol (Hisse Adı) kalın olsun */
+        .col-symbol {
+            font-weight: bold;
+            color: inherit;
+        }
+
+        /* Süre sütunu ve GÜN yazısı */
         .col-sure {
-            font-weight: 900 !important;
+            font-weight: normal !important; 
             display: flex;
             align-items: center;
             justify-content: flex-end;
@@ -103,15 +110,14 @@
             border-bottom: 2px solid #ddd;
         }
         .form-row { display: flex; gap: 10px; margin-bottom: 8px; align-items: center; }
-        .form-row label { width: 90px; font-size: 14px; font-weight: bold; }
-        input, select { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; }
+        .form-row label { width: 90px; font-size: 12px; font-weight: bold; }
+        input, select { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
         
         .btn-group { display: flex; gap: 5px; margin-top: 10px; }
         button { flex: 1; padding: 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .btn-add { background-color: #2c3e50; color: white; }
         .btn-upd { background-color: #2980b9; color: white; }
         .btn-del { background-color: #c0392b; color: white; }
-        .btn-reset { background-color: #7f8c8d; color: white; margin-top: 15px; width: 100%; font-size: 13px; }
 
         /* Alt Navigasyon */
         .bottom-nav {
@@ -123,7 +129,7 @@
             background: #f8f8f8;
             padding: 10px 0;
             border-top: 1px solid #ddd;
-            font-size: 13px;
+            font-size: 11px; 
             color: #777;
         }
         .nav-item { text-align: center; flex: 1; }
