@@ -23,7 +23,7 @@
         .header h1 {
             flex: 1;
             text-align: center;
-            font-size: 24px;
+            font-size: 20px;
             margin: 0;
             font-weight: bold;
             cursor: pointer;
@@ -76,7 +76,14 @@
         }
         .col-symbol { font-weight: normal; text-align: left; padding-left: 10px; text-transform: uppercase; }
         .col-val { text-align: right; padding-right: 5px; }
-        
+        .col-kz {
+            text-align: right;
+            padding-right: 5px;
+            line-height: 1;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
         .red { color: #d9534f; font-weight: bold; }
         .green { color: #5cb85c; font-weight: bold; }
 
@@ -225,7 +232,7 @@
 
 
     <div class="bottom-nav">
-        <div class="nav-item"><svg width="35" height="35" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <div class="nav-item"><svg width="25" height="25" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
   <line x1="8" y1="6" x2="21" y2="6"></line>
   <line x1="8" y1="12" x2="21" y2="12"></line>
   <line x1="8" y1="18" x2="21" y2="18"></line>
@@ -236,11 +243,11 @@
   <line x1="3.3" y1="12" x2="3" y2="12.3"></line>
   <line x1="3.3" y1="18" x2="3" y2="18.3"></line>
 </svg><br>Ekranım</div>
-        <div class="nav-item"><svg width="35" height="35" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <div class="nav-item"><svg width="25" height="25" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
   <polyline points="21 14 18 14 16 9 12 23 9 0 6 14 2 14"></polyline><circle cx="23" cy="14" r="2" fill="none"></circle>
 
 </svg><br>Piyasalar</div>
-        <div class="nav-item"><svg width="35" height="35" viewBox="0 0 24 24" fill="none">
+        <div class="nav-item"><svg width="25" height="25" viewBox="0 0 24 24" fill="none">
   <path d="M17 6H21V18C21 19.6569 19.6569 21 18 21H17" 
         stroke="#777" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
 
@@ -258,7 +265,7 @@
   <line x1="5.5" y1="17" x2="14" y2="17" stroke="#777" stroke-width="1.5" stroke-linecap="round"/>
 </svg>
 <br>Haberler</div>
-        <div class="nav-item active-nav"><svg width="35" height="35" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <div class="nav-item active-nav"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
   <path d="M17 7V5C17 3.89543 16.1046 3 15 3H9C7.89543 3 7 3.89543 7 5V7H4C2.89543 7 2 7.89543 2 9V11H22V9C22 7.89543 21.1046 7 20 7H17ZM9 5H15V7H9V5Z" fill="currentColor"/>
   
   <path d="M2 12V18C2 19.1046 2.89543 20 4 20H20C21.1046 20 22 19.1046 22 18V12H15V13H9V12H2Z" fill="currentColor"/>
@@ -326,7 +333,14 @@
         hisseListesiniGuncelle();
         formuTemizle();
     }
-
+// Uzunluğa göre font boyutunu belirleyen fonksiyon
+    function getKZFontSize(value) {
+        const textLength = value.length;
+        if (textLength > 12) return '10px';
+        if (textLength > 10) return '11px';
+        if (textLength > 8) return '13px';
+        return '15px';
+    }
     function tabloyuGuncelle() {
         const tableBody = document.getElementById("hisseTableBody");
         tableBody.innerHTML = "";
@@ -339,13 +353,18 @@
             const row = document.createElement("div");
             row.classList.add("portfolio-row");
             const karZararRenk = hisse.karZarar < 0 ? "red" : "green";
+            const formattedKZ = hisse.karZarar.toLocaleString('tr-TR', trLocale);
+            
+            // K/Z font boyutu hesaplama
+            const fontSize = getKZFontSize(formattedKZ);
+            
             row.innerHTML = `
                 <div class="main-data grid-layout">
                     <div class="col-symbol">${hisse.ad}</div>
                     <div class="col-val">${hisse.maliyet.toFixed(2)}</div>
                     <div class="col-val">${hisse.adet}</div>
                     
-                    <div class="col-val ${karZararRenk}">${parseFloat(hisse.karZarar).toLocaleString('tr-TR', trLocale)}</div>
+                    <div class="col-kz ${karZararRenk}" style="font-size: ${fontSize};">${parseFloat(hisse.karZarar).toLocaleString('tr-TR', trLocale)}</div>
                     
                     <div class="col-val">${hisse.fiyat.toFixed(2)}</div>
                     
