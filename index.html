@@ -26,10 +26,6 @@
             background-color: #FFD700; /* Sarımsı ton */
             color: black; /* Yazı rengi */
         }
-        #vakif {
-            background-color: #FFD700; /* Sarımsı ton */
-            color: black; /* Yazı rengi */
-        }
         #bekleyen:hover {
             background-color: #FFC300; /* Hover durumunda daha açık sarı */
         }
@@ -48,6 +44,14 @@
     </style>
 </head>
 <body>
+<!-- Giriş Ekranı -->
+        <div id="auth-section" class="bg-white p-8 rounded-xl shadow-md mt-20 text-center">
+            <h1 class="text-2xl font-bold mb-6 text-gray-800">Hoş Geldiniz</h1>
+            <p class="text-gray-600 mb-8">Rehberinizi yönetmek için Google ile giriş yapın.</p>
+            <button id="login-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 flex items-center justify-center w-full">
+                Google ile Giriş Yap
+            </button>
+        </div>
     <h1>Hangi dosyayı açmak istersiniz?</h1>
     
 	<a href="portfoy1.html">PATRON</a>
@@ -56,9 +60,82 @@
 	<a href="portfoy4.html">Portfoy1</a>
 	<a href="portfoy5.html">Portfoy2</a>
 	<a href="portfoy6.html">Portfoy3</a>
-	<a href="bekleyen.html" id="bekleyen">Bekleyen</a>
-	<a href="vakif.html" id="vakif">Vakıf</a>
+	<a href="bekleyen.html" id="bekleyen">Bekleyen</a> <!-- Renkli düğme -->
     <br>
+    <button id="fullscreen-btn" onclick="toggleFullscreen()">Tam Ekran</button>
 
+<script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+
+        // Global Değişkenler (Ortamdan gelen config)
+        const firebaseConfig = {
+          apiKey: "AIzaSyB0YfbsNuiFWyXc0W3jGIuZxmfIs7dkOH8",
+          authDomain: "cloneportfoy.firebaseapp.com",
+          projectId: "cloneportfoy",
+          storageBucket: "cloneportfoy.firebasestorage.app",
+          messagingSenderId: "859524969826",
+          appId: "1:859524969826:web:da786a34c22bcbcc8de83b",
+          measurementId: "G-SXZKQX187N"
+        };
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        // Firebase Başlatma
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+
+        // UI Elemanları
+        const authSection = document.getElementById('auth-section');
+        const mainSection = document.getElementById('main-section');
+        const loginBtn = document.getElementById('login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const userNameSpan = document.getElementById('user-name');
+        const userPhotoImg = document.getElementById('user-photo');
+        const saveBtn = document.getElementById('save-btn');
+        const toggleListBtn = document.getElementById('toggle-list-btn');
+        const listContainer = document.getElementById('list-container');
+        const contactsList = document.getElementById('contacts-list');
+        const emptyMsg = document.getElementById('empty-msg');
+
+        let currentUser = null;
+
+        // AUTH İŞLEMLERİ (Kural 3: Önce Auth)
+        const initAuth = async () => {
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                await signInWithCustomToken(auth, __initial_auth_token).catch(() => signInAnonymously(auth));
+            }
+        };
+        initAuth();
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                authSection.classList.add('hidden');
+                mainSection.classList.remove('hidden');
+                userNameSpan.textContent = user.displayName || "Kullanıcı";
+                userPhotoImg.src = user.photoURL || "https://via.placeholder.com/40";
+                loadContacts(); // Verileri dinlemeye başla
+            } else {
+                currentUser = null;
+                authSection.classList.remove('hidden');
+                mainSection.classList.add('hidden');
+            }
+        });
+
+        // Google ile Giriş
+        loginBtn.onclick = async () => {
+            try {
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                console.error("Giriş hatası:", error);
+            }
+        };
+
+        // Çıkış Yap
+        logoutBtn.onclick = () => signOut(auth);
+    </script>
 </body>
 </html>
