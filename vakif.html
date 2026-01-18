@@ -206,32 +206,32 @@
                     </div>
                 </div>
 
-                <!-- HKTM.E Hisse Kartı -->
-                <div id="card-HKTM.E" class="bg-white p-4 rounded-lg shadow-sm">
+                <!-- ORGE.E Hisse Kartı -->
+                <div id="card-ORGE.E" class="bg-white p-4 rounded-lg shadow-sm">
                     <div class="flex justify-between items-center mb-2">
-                        <h2 class="text-lg font-bold">HKTM.E</h2>
+                        <h2 class="text-lg font-bold">ORGE.E</h2>
                         <div class="flex items-center space-x-2">
-                            <span id="total-value-HKTM.E" class="text-xl font-bold">0,00 TL</span>
+                            <span id="total-value-ORGE.E" class="text-xl font-bold">0,00 TL</span>
                             <i data-lucide="chevron-right" class="w-5 h-5 text-gray-400"></i>
                         </div>
                     </div>
                     <div class="flex justify-between items-end mb-2">
-                        <span id="portfolio-percent-HKTM.E" class="text-gray-600 text-xs font-medium">%0.00</span>
+                        <span id="portfolio-percent-ORGE.E" class="text-gray-600 text-xs font-medium">%0.00</span>
                         <div class="text-right">
-                            <div id="change-container-HKTM.E" class="text-sm font-semibold flex items-center">
-                                <i id="change-icon-HKTM.E" data-lucide="triangle" class="w-3 h-3 mr-1"></i>
-                                <span id="change-percent-HKTM.E">%0,00</span>
-                                <span id="change-amount-HKTM.E" class="text-xs font-normal ml-1">(0,00 TL)</span>
+                            <div id="change-container-ORGE.E" class="text-sm font-semibold flex items-center">
+                                <i id="change-icon-ORGE.E" data-lucide="triangle" class="w-3 h-3 mr-1"></i>
+                                <span id="change-percent-ORGE.E">%0,00</span>
+                                <span id="change-amount-ORGE.E" class="text-xs font-normal ml-1">(0,00 TL)</span>
                             </div>
                         </div>
                     </div>
                     <div class="w-full h-2 bg-gray-200 rounded-full mb-3">
-                        <div id="progress-bar-HKTM.E" class="h-2 light-blue-bar rounded-full" style="width: 0%;"></div>
+                        <div id="progress-bar-ORGE.E" class="h-2 light-blue-bar rounded-full" style="width: 0%;"></div>
                     </div>
                     <div class="grid grid-cols-3 gap-2 text-sm">
-                        <div><div class="detail-label">Satılabilir Adet</div><div id="quantity-HKTM.E" class="font-medium">0</div></div>
-                        <div><div class="detail-label">Maliyet*</div><div id="cost-price-HKTM.E" class="font-medium">0 TL</div></div>
-                        <div><div class="detail-label">Son İşlem Fiyatı</div><div id="last-price-HKTM.E" class="font-medium">0 TL</div></div>
+                        <div><div class="detail-label">Satılabilir Adet</div><div id="quantity-ORGE.E" class="font-medium">0</div></div>
+                        <div><div class="detail-label">Maliyet*</div><div id="cost-price-ORGE.E" class="font-medium">0 TL</div></div>
+                        <div><div class="detail-label">Son İşlem Fiyatı</div><div id="last-price-ORGE.E" class="font-medium">0 TL</div></div>
                     </div>
                 </div>
                 
@@ -243,7 +243,7 @@
                             <label for="stock-select" class="detail-label block mb-1">Hisse Kodu Seçin</label>
                             <select id="stock-select" class="w-full p-2 border border-gray-300 rounded-md focus:ring-amber-500">
                                 <option value="BMSTL.E">BMSTL.E</option>
-                                <option value="HKTM.E">HKTM.E</option>
+                                <option value="ORGE.E">ORGE.E</option>
                             </select>
                         </div>
                         <div class="mb-3">
@@ -411,7 +411,7 @@
         const ORDER_DETAIL_KEY = 'orderDetailState_v1';
         const IMAGE_URLS = ["https://i.imgur.com/LIvAA9i.png", "https://i.imgur.com/o8d9pDs.png", "https://i.imgur.com/SD90fP5.png"];
 
-        const defaultStocks = { 'BMSTL.E': { quantity: 1186.00, costPrice: 26.37, lastPrice: 82.90 }, 'HKTM.E': { quantity: 0, costPrice: 0, lastPrice: 0 } };
+        const defaultStocks = { 'BMSTL.E': { quantity: 1186.00, costPrice: 26.37, lastPrice: 82.90 }, 'ORGE.E': { quantity: 0, costPrice: 0, lastPrice: 0 } };
         const defaultAccountDetails = { borsaLimit: 0, t2Balance: 0, t1Balance: 0, tlBalance: 0, blokeBalance: 0 };
 
         const stockSelect = document.getElementById('stock-select');
@@ -708,3 +708,4 @@
     </script>
 </body>
 </html>
+
