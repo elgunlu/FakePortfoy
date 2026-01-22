@@ -1,135 +1,41 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hisse Portföyüm</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Borsa Portföyüm</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        :root {
+            --primary-blue: #007AFF;
+            --bg-light: #F2F2F7;
+            --card-gray: #E5E5EA;
+            --success-green: #34C759;
+            --ios-gray: #8E8E93;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #ffffff;
+            background-color: var(--bg-light);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #000;
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
         }
 
-        /* Üst Başlık */
-        .header {
-            background-color: #eaeaea;
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-        }
-        .header h1 {
-            flex: 1;
-            text-align: center;
-            font-size: 20px;
-            margin: 0;
-            font-weight: bold;
-            cursor: pointer;
-            user-select: none;
-        }
-        .back-icon { font-size: 20px; cursor: pointer; padding: 5px; }
+        .safe-area-top { padding-top: env(safe-area-inset-top); }
 
-        /* Izgara Yapısı (Grid Layout) */
-        .grid-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1.2fr 1fr;
-            align-items: center;
+        .tab-active {
+            border-bottom: 3px solid #000;
+            color: #000;
+            font-weight: 700;
         }
 
-        /* Sütun Başlıkları */
-        .table-header {
-            font-size: 13px;
-            color: #666;
-            border-bottom: 1px solid #eee;
-        }
-        .table-header div { text-align: right; }
-        
-        /* Ayarlar Kutusu */
-        .table-header .col-settings { 
-            text-align: center; 
-            color: #5b7199; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 1px solid #f3f3f3;
-            border-radius: 0px;
-            padding: 0px;
-            width: 100%;
-            height: 45px;
-            justify-self: start;
-            margin: 0;
-            box-sizing: border-box;
-            border-left: none;
-            cursor: pointer;
-        }
-        .table-header .col-symbol { text-align: left; padding-left: 10px; }
-
-        /* Hisse Satırları */
-        .portfolio-row {
-            border-bottom: 1px solid #eee;
-            padding: 10px 0;
-        }
-        .main-data {
-            font-size: 15px;
-        }
-        .col-symbol { font-weight: normal; text-align: left; padding-left: 10px; text-transform: uppercase; }
-        .col-val { text-align: right; padding-right: 5px; }
-        .col-kz {
-            text-align: right;
-            padding-right: 5px;
-            line-height: 1;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-        }
-        .red { color: #d9534f; font-weight: bold; }
-        .green { color: #5cb85c; font-weight: bold; }
-
-        /* Toplam Satırı */
-        .total-row {
-            padding: 12px 0;
-            font-weight: bold;
-            font-size: 15px;
-            border-top: 2px solid #eee;
-            background-color: #fff;
-        }
-        .total-label {
-            grid-column: 1 / 4;
-            text-align: left;
-            padding-left: 10px;
-        }
-        .total-value {
-            text-align: right;
-            padding-right: 5px;
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
         }
 
-        /* Gizlenebilir Admin Paneli */
-        #adminPanel {
-            display: none;
-            background: #f4f4f4;
-            padding: 15px;
-            border-bottom: 2px solid #ddd;
-        }
-
-        /* Form ve Butonlar */
-        .form-container {
-            margin-top: 10px;
-        }
-        .form-row { display: flex; gap: 5px; margin-bottom: 8px; align-items: center; }
-        .form-row label { width: 80px; font-size: 12px; font-weight: bold; }
-        input, select { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 12px; }
-        .btn-group { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
-        button { flex: 1; min-width: 80px; padding: 10px; border: none; border-radius: 4px; cursor: pointer; color: black; font-weight: bold; }
-        
-        .btn-add { background-color: #2c3e50; }
-        .btn-upd { background-color: #2980b9; }
-        .btn-del { background-color: #c0392b; }
-        .btn-sync { background-color: #27ae60; width: 100%; margin-top: 10px; }
-        .btn-reset { background-color: #7f8c8d; width: 100%; margin-top: 15px; font-size: 11px; opacity: 0.8; }
-
-        /* Alt Navigasyon */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -144,91 +50,176 @@
             z-index: 100;
         }
         .nav-item { text-align: center; }
-        .active-nav { color: #000; font-weight: normal; }
+        .active-nav { color: #000; }
+
+        .card-shadow { box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
+        .label-text { color: var(--ios-gray); font-weight: 400; }
+        .value-text { color: #000000; font-weight: 500; }
+
+        #editPanel {
+            max-height: 0;
+            overflow: hidden;
+            display: none; /* Açılışta tamamen gizli olması için */
+            transition: max-height 0.4s ease-out;
+        }
+
+        #editPanel.open { 
+            max-height: 2000px;
+            display: block;
+        }
+
+        input {
+            border: 1px solid #ddd;
+            padding: 6px 8px;
+            border-radius: 6px;
+            width: 100%;
+            font-size: 14px;
+            margin-bottom: 8px;
+            background: white;
+        }
+        input:read-only { background-color: #f9f9f9; color: #888; }
+
+        button:active { opacity: 0.7; transform: scale(0.98); }
     </style>
 </head>
-<body>
+<body class="pb-28">
 
-    <div class="header">
-        <div class="back-icon" onclick="history.back()">
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="15" y1="12" x2="5" y2="12" />
-              <path d="M10 6 L4 12 L10 18" />
-            </svg>
+    <header class="glass-effect sticky top-0 z-50 border-b border-gray-200">
+        <div class="safe-area-top"></div>
+        <div class="flex items-center justify-between px-5 py-3">
+            <button class="p-1" onclick="toggleEditPanel()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+            <h1 class="text-[17px] font-bold tracking-tight cursor-pointer select-none" onclick="toggleEditPanel()">Portföyüm</h1>
+            <div class="w-8"></div>
         </div>
-       <h1 onclick="toggleAdminPanel()">Hisse Portföyüm</h1>
-    </div>
-
-    <!-- Tablo Başlığı -->
-    <div class="table-header grid-layout">
-        <div class="col-settings">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12.122 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-            </svg>
+        <div class="flex border-t border-gray-100/50">
+            <button class="flex-1 py-3 text-[13px] font-bold tab-active">HİSSE</button>
+            <button class="flex-1 py-3 text-[13px] font-medium text-gray-400">VİOP</button>
+            <button class="flex-1 py-3 text-[13px] font-medium text-gray-400">FON</button>
         </div>
-        <div>Maliyet</div>
-        <div>Miktar</div>
-        <div>K/Z</div>
-        <div>Kapanış</div>
-    </div>
+    </header>
 
-			
-<!-- Tablo için div yapısı -->
-    <div id="hisseTableBody"></div>
+    <main class="max-w-md mx-auto min-h-screen">
+        <div class="bg-white min-h-screen card-shadow">
+            <div class="px-4 pt-5">
+                <div class="flex gap-3 mb-6">
+                    <a href="portfoy.html" class="flex-1 bg-blue-600 rounded-2xl p-4 text-white relative card-shadow overflow-hidden block">
+                        <div class="flex justify-between items-center mb-1">
+                            <div class="text-4xl font-normal" id="val-box1">0</div>
+                            <div class="text-4xl">›</div>
+                        </div>
+                        <div class="text-sm font-medium opacity-90">Hisse Portföyüm</div>
+                    </a>
+                    <a href="bekleyen.html" class="flex-1 bg-gray-300 rounded-2xl p-4 text-white relative card-shadow overflow-hidden block">
+                        <div class="flex justify-between items-center mb-1">
+                            <div class="text-4xl font-normal text-white" id="val-box2">0</div>
+                            <div class="text-4xl text-black">›</div>
+                        </div>
+                        <div class="text-sm font-medium text-black opacity-90">Gün içi İşlem</div>
+                    </a>
+                </div>
 
-    <div class="total-row grid-layout">
-        <div class="total-label">Toplam</div>
-        <div id="totalProfit" class="total-value red">0,00</div>
-        
-    </div>
-    <div class="portfolio2-row"></div>
+                <button class="w-full bg-gray-200 hover:bg-gray-300 py-2.5 rounded-2xl font-semibold text-gray-700 transition-colors mb-6 flex justify-between px-5 items-center">
+                    <span class="text-sm">Geçmiş İşlemler</span>
+                    <span class="text-2xl text-white">›</span>
+                </button>
 
-  
+                <div class="text-center py-5 border-b border-gray-50">
+                    <h2 class="text-blue-600 font-extrabold tracking-widest uppercase text-sm">ÖZCAN ELGÜNLÜ</h2>
+                </div>
 
-<script>
-        function sayfayiYenile() {
-            location.reload();
-        }
-    </script>
-    <!-- Tıklandığında Açılan Panel -->
-    <div id="adminPanel">
-<!-- Fiyat Güncelleme Butonu -->
-        <button class="btn-sync" onclick="sayfayiYenile()">Mynet'ten Fiyatları Güncelle</button>
-         
-        
-<div class="form-container">
-    <form id="updateForm">
-        <div class="form-row">
-            <label for="hisseAd">Hisse Adı:</label>
-            <input type="text" id="hisseAd" required>
+                <div class="px-5 py-4 text-[12px] md:text-[13px] leading-relaxed border-b border-gray-100">
+                    <div class="flex justify-between items-center py-1">
+                        <span class="text-black"><span id="val-prevDate">--/--/----</span> Overall <span id="val-prevOverall">0,00</span> TL</span>
+                        <span class="text-black">Günlük Değişim</span>
+                    </div>
+                    <div class="h-px bg-gray-100 my-1"></div>
+                    <div class="flex justify-between items-center py-1">
+                        <span class="text-black font-semibold"><span id="val-currDate">--/--/----</span> Overall <span id="val-overall">0,00</span> TL</span>
+                        <span id="val-change" class="text-green-600 font-bold">0.00%</span>
+                    </div>
+                </div>
+
+                <div class="px-5 pt-4 pb-2">
+                    <span class="font-bold text-black text-[13px]">Hisse Hesap Özeti</span>
+                </div>
+
+                <div class="px-1 pb-4 text-[12px]">
+                    <div class="divide-y divide-gray-50">
+                        <div class="flex justify-between py-1.5 px-4"><span class="label-text">Cari Bakiye</span><span id="val-cari" class="value-text">0,00</span></div>
+                        <div class="flex justify-between py-1.5 px-4"><span class="label-text">T1 Cari Bakiye</span><span id="val-t1cari" class="value-text">0,00</span></div>
+                        <div class="flex justify-between py-1.5 px-4"><span class="label-text">T2 Cari Bakiye</span><span id="val-t2cari" class="value-text">0,00</span></div>
+                        <div class="flex justify-between py-1.5 px-4"><span class="label-text">Hisse Toplamı</span><span id="val-hisseToplam" class="value-text font-semibold">0,00</span></div>
+                        <div class="flex justify-between py-1.5 px-4 bg-gray-50/50"><span class="label-text">Overall</span><span id="val-overallTable" class="value-text">0,00</span></div>
+                        <div class="flex justify-between py-1.5 px-4"><span class="label-text">T1 Overall</span><span id="val-t1overall" class="value-text">0,00</span></div>
+                        <div class="flex justify-between py-1.5 px-4"><span class="label-text">T2 Overall</span><span id="val-t2overall" class="value-text">0,00</span></div>
+                        <div class="flex justify-between py-1.5 px-4"><span class="label-text">Müşteri Kredi Limiti</span><span id="val-kredi" class="value-text">0,00</span></div>
+                        <div class="flex justify-between py-1.5 px-4"><span class="label-text">Alım Satım Neti</span><span id="val-net" class="value-text">0,00</span></div>
+                        <div class="flex justify-between py-1.5 px-4"><span class="label-text">İşlem Limiti</span><span id="val-limit" class="value-text">0,00</span></div>
+                    </div>
+                </div>
+
+                <!-- GÜNCELLEME FORMU -->
+                <div id="editPanel" class="px-4 pb-10 bg-gray-100 rounded-t-3xl border-t border-gray-200">
+                    <div class="flex justify-between items-center py-4">
+                        <h3 class="font-bold text-blue-600">Verileri Güncelle</h3>
+                        <button onclick="toggleEditPanel()" class="text-gray-400">Kapat</button>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="text-[10px] text-gray-400 font-bold uppercase">Güncel Tarih</label>
+                                <input type="text" id="in-currDate" oninput="handleDateInput(this.value)">
+                            </div>
+                            <div>
+                                <label class="text-[10px] text-gray-400 font-bold uppercase">Geçmiş Tarih (Oto)</label>
+                                <input type="text" id="in-prevDate" readonly>
+                            </div>
+                            <div>
+                                <label class="text-[10px] text-gray-400 font-bold uppercase">Geçmiş Overall</label>
+                                <input type="text" id="in-prevOverall" oninput="autoCalculate()">
+                            </div>
+                            <div>
+                                <label class="text-[10px] text-gray-400 font-bold uppercase">Güncel Overall (Oto)</label>
+                                <input type="text" id="in-overall" readonly>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="text-[10px] text-gray-400 font-bold uppercase">Değişim % (Oto)</label>
+                                <input type="text" id="in-change" readonly>
+                            </div>
+                            <div>
+                                <label class="text-[10px] text-gray-400 font-bold uppercase">Cari Bakiye</label>
+                                <input type="text" id="in-cari" oninput="autoCalculate()">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="text-[10px] text-gray-400 font-bold uppercase">Hisse Portföy (Sayı)</label>
+                                <input type="text" id="in-box1">
+                            </div>
+                            <div>
+                                <label class="text-[10px] text-gray-400 font-bold uppercase">Gün içi İşlem (Sayı)</label>
+                                <input type="text" id="in-box2">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-[10px] text-gray-400 font-bold uppercase">Hisse Toplamı</label>
+                            <input type="text" id="in-hisseToplam" oninput="autoCalculate()">
+                        </div>
+                    </div>
+
+                    <button onclick="saveData()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold mt-6 shadow-lg shadow-blue-200">Değişiklikleri Kaydet</button>
+                </div>
+            </div>
         </div>
-        <div class="form-row">
-            <label for="maliyet">Maliyet:</label>
-            <input type="text" id="maliyet" step="0.01" required>
-        </div>
-        <div class="form-row">
-            <label for="adet">Adet:</label>
-            <input type="number" id="adet" step="1" required>
-        </div>
-        <div class="form-row">
-            <label for="fiyat">Fiyat:</label>
-            <input type="number" id="fiyat" step="0.01" required>
-        </div>
-
-        <select id="hisseSelect" onchange="hisseSec()">
-        <option value="">Bir hisse seçin</option>
-		</select>
-        <button type="button" onclick="ekleHisse()">Ekle</button>
-        <button type="button" onclick="guncelleHisse()">Güncelle</button>
-        <button type="button" onclick="silHisse()">Sil</button>
-		
-    </form>
-</div>    
-   <br><br>
-        <button class="btn-reset" onclick="verileriSifirla()">Verileri Sıfırla</button>
-
-</div>    
+    </main>
 
 
     <div class="bottom-nav">
@@ -272,220 +263,153 @@
 </svg><br>Portföyüm</div>
     </div>
 
+    <script>
+        let portfolioData = {
+            prevDate: "22/01/2026",
+            currDate: "23/01/2026",
+            prevOverall: "440.999,27",
+            overall: "449.536,60",
+            change: "1.94%",
+            box1: "4",
+            box2: "3",
+            cari: "1.338,91",
+            hisseToplam: "445.329,48"
+        };
 
-
-
-<script>
-    let hisseler = [];
-    
-    // Panel Aç/Kapat
-    function toggleAdminPanel() {
-        const panel = document.getElementById("adminPanel");
-        if (panel.style.display === "block") {
-            panel.style.display = "none";
-        } else {
-            panel.style.display = "block";
-        }
-    }
-    // Yerel Ayarları Al (Türkçe için binlik ayraç nokta, ondalık virgül)
-    const trLocale = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
-    
-    // Sayfa yüklendiğinde veriyi çek ve benzersiz id ataması yap
-    document.addEventListener('DOMContentLoaded', () => {
-        const kayitliHisseler = localStorage.getItem('hisseler_2');
-        if (kayitliHisseler) {
-            hisseler = JSON.parse(kayitliHisseler).map((hisse, index) => ({
-                ...hisse,
-                id: hisse.id || `hisse-${index + 1}`
-            }));
-            kaydetVeGuncelle();
-        }
-    });
-
-    function ekleHisse() {
-        const hisse = { ...getFormVerileri(), id: `hisse-${Date.now()}` }; // Benzersiz id oluştur
-        hisseler.push(hisse);
-        kaydetVeGuncelle();
-    }
-
-    function guncelleHisse() {
-        const seciliHisseAd = document.getElementById("hisseSelect").value;
-        if (!seciliHisseAd) return alert("Güncellemek için bir hisse seçin.");
-        
-        const index = hisseler.findIndex(h => h.ad === seciliHisseAd);
-        if (index !== -1) {
-            hisseler[index] = { ...getFormVerileri(), id: hisseler[index].id };
-            kaydetVeGuncelle();
-        }
-    }
-
-    function silHisse() {
-        const seciliHisseAd = document.getElementById("hisseSelect").value;
-        if (!seciliHisseAd) return alert("Silmek için bir hisse seçin.");
-        
-        hisseler = hisseler.filter(h => h.ad !== seciliHisseAd);
-        kaydetVeGuncelle();
-    }
-
-    function kaydetVeGuncelle() {
-        localStorage.setItem('hisseler_2', JSON.stringify(hisseler));
-        tabloyuGuncelle();
-        hisseListesiniGuncelle();
-        formuTemizle();
-    }
-// Uzunluğa göre font boyutunu belirleyen fonksiyon
-    function getKZFontSize(value) {
-        const textLength = value.length;
-        if (textLength > 12) return '10px';
-        if (textLength > 10) return '11px';
-        if (textLength > 8) return '13px';
-        return '15px';
-    }
-    function tabloyuGuncelle() {
-        const tableBody = document.getElementById("hisseTableBody");
-        tableBody.innerHTML = "";
-        let toplamKZ = 0;
-        
-        hisseler.forEach((hisse) => {
-            const tlKarZarar = (hisse.fiyat - hisse.maliyet) * hisse.adet;
-            toplamKZ += tlKarZarar;
-            
-            const row = document.createElement("div");
-            row.classList.add("portfolio-row");
-            const karZararRenk = hisse.karZarar < 0 ? "red" : "green";
-            const formattedKZ = hisse.karZarar.toLocaleString('tr-TR', trLocale);
-            
-            // K/Z font boyutu hesaplama
-            const fontSize = getKZFontSize(formattedKZ);
-            
-            row.innerHTML = `
-                <div class="main-data grid-layout">
-                    <div class="col-symbol">${hisse.ad}</div>
-                    <div class="col-val">${hisse.maliyet.toFixed(2)}</div>
-                    <div class="col-val">${hisse.adet}</div>
-                    
-                    <div class="col-kz ${karZararRenk}" style="font-size: ${fontSize};">${parseFloat(hisse.karZarar).toLocaleString('tr-TR', trLocale)}</div>
-                    
-                    <div class="col-val">${hisse.fiyat.toFixed(2)}</div>
-                    
-                </div>
-
-            `;
-            tableBody.appendChild(row);
-        });
-        const totalEl = document.getElementById("totalProfit");
-        if (totalEl) {
-            totalEl.innerText = toplamKZ.toLocaleString('tr-TR', trLocale);
-            totalEl.className = `total-value ${toplamKZ < 0 ? "red" : "green"}`;
-        }
-    }
-
-    function getFormVerileri() {
-        const ad = document.getElementById("hisseAd").value.toUpperCase().trim();
-
-        const fiyat = parseFloat(document.getElementById("fiyat").value);
-        const maliyet = parseFloat(document.getElementById("maliyet").value);
-        const adet = parseInt(document.getElementById("adet").value);
-
-        const karZarar = ((fiyat - maliyet)* adet).toFixed(2);
-        return { ad, fiyat, maliyet, adet, karZarar };
-    }
-
-    function hisseSec() {
-        const seciliHisseAd = document.getElementById("hisseSelect").value;
-        if (seciliHisseAd === "") return formuTemizle();
-        const hisse = hisseler.find(h => h.ad === seciliHisseAd);
-        if (hisse) formuDoldur(hisse);
-    }
-
-    function formuDoldur(hisse) {
-        document.getElementById("hisseAd").value = hisse.ad;
-
-        document.getElementById("fiyat").value = hisse.fiyat;
-        document.getElementById("maliyet").value = hisse.maliyet;
-        document.getElementById("adet").value = hisse.adet;
-
-    }
-
-    function formuTemizle() {
-        document.getElementById("updateForm").reset();
-    }
-
-    function hisseListesiniGuncelle() {
-        const select = document.getElementById("hisseSelect");
-        select.innerHTML = '<option value="">Bir hisse seçin</option>';
-        hisseler.forEach(hisse => {
-            const option = document.createElement("option");
-            option.value = hisse.ad;
-            option.textContent = hisse.ad;
-            select.appendChild(option);
-        });
-    }
-
-	document.addEventListener('DOMContentLoaded', () => {
-        console.log("Sayfa yüklendi. Hisse fiyatlarını çekme işlemi başlıyor...");
-        guncelFiyatlariGetir();
-    });
-	
-    async function guncelFiyatlariGetir() {
-    console.log("Hisse fiyatı çekme işlemi başladı.");
-    try {
-        console.log("Mynet sitesine istek gönderiliyor...");
-        const response = await fetch('https://finans.mynet.com/borsa/hisseler/');
-        console.log("Sayfa başarılı bir şekilde yüklendi.");
-        const text = await response.text();
-        console.log("Sayfa içeriği ayrıştırılıyor...");
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(text, 'text/html');
-        console.log("Tablo satırları seçiliyor...");
-        const rows = doc.querySelectorAll('tr');
-
-        rows.forEach(row => {
-            try {
-                const hisseKod = row.querySelector('strong a')?.textContent.trim(); // Hisse kodu
-                const fiyatMetni = row.querySelectorAll('td')[2]?.textContent.trim(); // 3. sütundaki fiyat verisi
-                const yeniFiyat = parseFloat(fiyatMetni.replace('.', '').replace(',', '.'));
-
-                if (hisseKod) {
-                    console.log(`Hisse kodu: ${hisseKod} bulundu.`);
-                    
-                    // Hisseyi mevcut hisseler içinde bul
-                    hisseler.forEach(hisse => {
-                        // -CARI kısmını kaldırarak karşılaştırma yapıyoruz
-                        const temizAd = hisse.ad.replace('-CARI', '');
-                        if (hisseKod.includes(temizAd)) {
-                            console.log(`${hisseKod} güncelleniyor...`);
-                            hisse.fiyat = yeniFiyat; // Yeni fiyatı tabloya ata
-                            hisse.karZarar = ((yeniFiyat - hisse.maliyet) * hisse.adet).toFixed(2); // Kar zarar güncelle
-                        }
-                    });
-                }
-            } catch (err) {
-                console.error("Bir hata oluştu:", err);
+        window.onload = () => {
+            const saved = localStorage.getItem('portfolio_data_v4');
+            if (saved) {
+                portfolioData = JSON.parse(saved);
+            } else {
+                const today = new Date();
+                portfolioData.currDate = formatDate(today);
+                portfolioData.prevDate = formatDate(new Date(today.getTime() - 86400000));
             }
-        });
+            updateUI();
+        };
 
-        kaydetVeGuncelle(); // Güncellenmiş fiyatları kaydet ve güncelle
-    } catch (error) {
-        console.error("Hata: Fiyat çekme işlemi başarısız oldu.", error);
-    }
-}
-    function verileriSifirla() {
-        if(confirm("Tüm kayıtlı hisse bilgileriniz silinecek. Emin misiniz?")) {
-            localStorage.removeItem('hisseler');
-            hisseler = [];
-            tabloyuGuncelle();
-            hisseListesiniGuncelle();
-            alert("Tüm veriler temizlendi.");
+        function formatDate(date) {
+            return date.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' });
         }
-    }
 
+        function parseDate(str) {
+            const parts = str.split('/');
+            if(parts.length < 3) return null;
+            return new Date(parts[2], parts[1] - 1, parts[0]);
+        }
 
-    // Fiyatları her 5 dakikada bir güncelle
-    setInterval(guncelFiyatlariGetir, 300000);
-</script>
+        function handleDateInput(val) {
+            const d = parseDate(val);
+            if(d && !isNaN(d.getTime())) {
+                const prevD = new Date(d.getTime() - 86400000);
+                document.getElementById('in-prevDate').value = formatDate(prevD);
+            }
+        }
 
+        function cleanNum(str) {
+            if(!str) return 0;
+            // "440.999,27" formatını 440999.27 sayısına çevirir
+            return parseFloat(str.toString().replace(/\./g, '').replace(',', '.'));
+        }
 
+        function formatNum(num) {
+            return num.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
 
+        function autoCalculate() {
+            const prev = cleanNum(document.getElementById('in-prevOverall').value);
+            const cari = cleanNum(document.getElementById('in-cari').value);
+            const hisse = cleanNum(document.getElementById('in-hisseToplam').value);
+            
+            // 1. Kural: Cari Bakiye + Hisse Toplamı = Overall
+            const curr = cari + hisse;
+            document.getElementById('in-overall').value = formatNum(curr);
+            
+            // 2. Kural: Değişim % hesapla
+            if(prev !== 0) {
+                const diff = ((curr - prev) / prev) * 100;
+                document.getElementById('in-change').value = diff.toFixed(2) + "%";
+            } else {
+                document.getElementById('in-change').value = "0.00%";
+            }
+        }
+
+        function toggleEditPanel() {
+            const panel = document.getElementById('editPanel');
+            const isOpen = panel.classList.contains('open');
+            
+            if(!isOpen) {
+                panel.style.display = 'block';
+                // Inputları doldur
+                document.getElementById('in-currDate').value = portfolioData.currDate;
+                document.getElementById('in-prevDate').value = portfolioData.prevDate;
+                document.getElementById('in-prevOverall').value = portfolioData.prevOverall;
+                document.getElementById('in-overall').value = portfolioData.overall;
+                document.getElementById('in-box1').value = portfolioData.box1;
+                document.getElementById('in-box2').value = portfolioData.box2;
+                document.getElementById('in-change').value = portfolioData.change;
+                document.getElementById('in-cari').value = portfolioData.cari;
+                document.getElementById('in-hisseToplam').value = portfolioData.hisseToplam;
+                
+                setTimeout(() => {
+                    panel.classList.add('open');
+                    panel.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                }, 10);
+            } else {
+                panel.classList.remove('open');
+                setTimeout(() => { panel.style.display = 'none'; }, 400);
+            }
+        }
+
+        function saveData() {
+            portfolioData.currDate = document.getElementById('in-currDate').value || "00/00/0000";
+            portfolioData.prevDate = document.getElementById('in-prevDate').value || "00/00/0000";
+            portfolioData.prevOverall = document.getElementById('in-prevOverall').value || "0,00";
+            portfolioData.overall = document.getElementById('in-overall').value || "0,00";
+            portfolioData.box1 = document.getElementById('in-box1').value || "0";
+            portfolioData.box2 = document.getElementById('in-box2').value || "0";
+            portfolioData.change = document.getElementById('in-change').value || "0.00%";
+            portfolioData.cari = document.getElementById('in-cari').value || "0,00";
+            portfolioData.hisseToplam = document.getElementById('in-hisseToplam').value || "0,00";
+
+            localStorage.setItem('portfolio_data_v4', JSON.stringify(portfolioData));
+            updateUI();
+            toggleEditPanel();
+        }
+
+        function updateUI() {
+            const d = portfolioData;
+            document.getElementById('val-prevDate').innerText = d.prevDate;
+            document.getElementById('val-currDate').innerText = d.currDate;
+            document.getElementById('val-prevOverall').innerText = d.prevOverall;
+            document.getElementById('val-overall').innerText = d.overall;
+            document.getElementById('val-overallTable').innerText = d.overall;
+            
+            // Sync T1/T2 Overall
+            document.getElementById('val-t1overall').innerText = d.overall;
+            document.getElementById('val-t2overall').innerText = d.overall;
+            document.getElementById('val-limit').innerText = d.overall;
+
+            document.getElementById('val-box1').innerText = d.box1;
+            document.getElementById('val-box2').innerText = d.box2;
+            document.getElementById('val-change').innerText = d.change;
+            
+            // Sync Cari
+            document.getElementById('val-cari').innerText = d.cari;
+            document.getElementById('val-t1cari').innerText = d.cari;
+            document.getElementById('val-t2cari').innerText = d.cari;
+
+            document.getElementById('val-hisseToplam').innerText = d.hisseToplam;
+            document.getElementById('val-net').innerText = d.hisseToplam;
+
+            const changeEl = document.getElementById('val-change');
+            if (d.change.includes('-')) {
+                changeEl.style.color = '#dc2626';
+            } else {
+                changeEl.style.color = '#16a34a';
+            }
+        }
+    </script>
 </body>
 </html>
+
