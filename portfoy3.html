@@ -10,15 +10,20 @@
             margin: 0;
             padding: 0;
             background-color: #ffffff;
+            /* Alt navigasyonun üstte kalmaması için padding ekliyoruz */
+            padding-bottom: 70px;
         }
 
-        /* Üst Başlık */
+        /* Üst Başlık - Sabitlendi */
         .header {
             background-color: #eaeaea;
             display: flex;
             align-items: center;
             padding: 10px;
             border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
         .header h1 {
             flex: 1;
@@ -31,15 +36,33 @@
         }
         .back-icon { font-size: 20px; cursor: pointer; padding: 5px; }
 
+        /* Yatay Kaydırma Konteynırı */
+        .table-container {
+            overflow-x: auto;
+            width: 100%;
+        }
+
         /* Izgara Yapısı (Grid Layout) */
         .grid-layout {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1.2fr 1fr 1fr;
+            grid-template-columns: 80px 1fr 1fr 1.2fr 1fr 1fr; /* Fark sütunu kaldırıldı, sütun sayıları güncellendi */
             align-items: center;
-            min-width: 500px;
+            min-width: 500px; /* İçerik genişliği sütun azalınca ayarlandı */
         }
-        #hisseTableBody, .table-header, .total-row {
-        overflow-x: auto;
+
+        /* Sabit Sütun Stilleri */
+        .sticky-col {
+            position: sticky;
+            left: 0;
+            background-color: #fff;
+            z-index: 10;
+            border-right: 1px solid #eee;
+        }
+        
+        /* Başlık satırında sabit sütun arka planı */
+        .table-header .sticky-col {
+            background-color: #fff;
+            z-index: 20;
         }
 
         /* Sütun Başlıkları */
@@ -57,18 +80,11 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            border: 1px solid #f3f3f3;
-            border-radius: 0px;
-            padding: 0px;
-            width: 100%;
+            border-bottom: 1px solid #f3f3f3;
             height: 45px;
-            justify-self: start;
-            margin: 0;
             box-sizing: border-box;
-            border-left: none;
             cursor: pointer;
         }
-        .table-header .col-symbol { text-align: left; padding-left: 10px; }
 
         /* Hisse Satırları */
         .portfolio-row {
@@ -78,7 +94,12 @@
         .main-data {
             font-size: 15px;
         }
-        .col-symbol { font-weight: normal; text-align: left; padding-left: 10px; text-transform: uppercase; }
+        .col-symbol { 
+            font-weight: normal; 
+            text-align: left; 
+            padding-left: 10px; 
+            text-transform: uppercase; 
+        }
         .col-val { text-align: right; padding-right: 5px; }
         .col-kz {
             text-align: right;
@@ -100,11 +121,12 @@
             background-color: #fff;
         }
         .total-label {
-            grid-column: 1 / 4;
+            grid-column: 1 / 4; /* Sabit sütun + Maliyet + Miktar alanını kapsar */
             text-align: left;
             padding-left: 10px;
         }
         .total-value {
+            grid-column: 4 / 5; /* Tam olarak K/Z sütununun altına denk gelir */
             text-align: right;
             padding-right: 5px;
         }
@@ -127,11 +149,11 @@
         .btn-group { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
         button { flex: 1; min-width: 80px; padding: 10px; border: none; border-radius: 4px; cursor: pointer; color: black; font-weight: bold; }
         
-        .btn-add { background-color: #2c3e50; }
-        .btn-upd { background-color: #2980b9; }
-        .btn-del { background-color: #c0392b; }
-        .btn-sync { background-color: #27ae60; width: 100%; margin-top: 10px; }
-        .btn-reset { background-color: #7f8c8d; width: 100%; margin-top: 15px; font-size: 11px; opacity: 0.8; }
+        .btn-add { background-color: #2c3e50; color: white; }
+        .btn-upd { background-color: #2980b9; color: white; }
+        .btn-del { background-color: #c0392b; color: white; }
+        .btn-sync { background-color: #27ae60; color: white; width: 100%; margin-top: 10px; }
+        .btn-reset { background-color: #7f8c8d; color: white; width: 100%; margin-top: 15px; font-size: 11px; opacity: 0.8; }
 
         /* Alt Navigasyon */
         .bottom-nav {
@@ -145,7 +167,7 @@
             border-top: 1px solid #eee;
             font-size: 14px;
             color: #888;
-            z-index: 100;
+            z-index: 1001;
         }
         .nav-item { text-align: center; }
         .active-nav { color: #000; font-weight: normal; }
@@ -163,36 +185,9 @@
        <h1 onclick="toggleAdminPanel()">Hisse Portföyüm</h1>
     </div>
 
-    <!-- Tablo Başlığı -->
-    <div class="table-header grid-layout">
-        <div class="col-settings">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12.122 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-            </svg>
-        </div>
-        <div>Maliyet</div>
-        <div>Miktar</div>
-        <div>K/Z</div>
-        <div>Kapanış</div>
-        <div>K/Z%</div>
-    </div>
-
-			
-    <!-- Tablo için div yapısı -->
-    <div id="hisseTableBody"></div>
-
-    <div class="total-row grid-layout">
-        <div class="total-label">Toplam</div>
-        <div id="totalProfit" class="total-value red">0,00</div>
-    </div>
-    <div class="portfolio2-row"></div>
-
-    <!-- Tıklandığında Açılan Panel -->
+    <!-- Tıklandığında Açılan Panel (Üstte kalması için taşındı) -->
     <div id="adminPanel">
-        <!-- Fiyat Güncelleme Butonu -->
         <button class="btn-sync" onclick="location.reload()">Mynet'ten Fiyatları Güncelle</button>
-        
         <div class="form-container">
             <form id="updateForm">
                 <div class="form-row">
@@ -222,10 +217,34 @@
                 </div>
             </form>
         </div>    
-        <br><br>
+        <br>
         <button class="btn-reset" onclick="verileriSifirla()">Verileri Sıfırla</button>
-    </div>    
+    </div>
 
+    <div class="table-container">
+        <!-- Tablo Başlığı -->
+        <div class="table-header grid-layout">
+            <div class="col-settings sticky-col">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12.122 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+            </div>
+            <div>Maliyet</div>
+            <div>Miktar</div>
+            <div>K/Z</div>
+            <div>Kapanış</div>
+            <div>K/Z%</div>
+        </div>
+
+        <!-- Tablo için div yapısı -->
+        <div id="hisseTableBody"></div>
+
+        <div class="total-row grid-layout">
+            <div class="total-label sticky-col">Toplam</div>
+            <div id="totalProfit" class="total-value red">0,00</div>
+        </div>
+    </div>
 
      <div class="bottom-nav">
         <div class="nav-item">
@@ -261,16 +280,13 @@
     let hisseler = [];
     const STORAGE_KEY = 'hisseler_3';
     
-    // Panel Aç/Kapat
     function toggleAdminPanel() {
         const panel = document.getElementById("adminPanel");
         panel.style.display = (panel.style.display === "block") ? "none" : "block";
     }
 
-    // Yerel Ayarlar
     const trLocale = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
     
-    // Sayfa yüklendiğinde veriyi çek
     document.addEventListener('DOMContentLoaded', () => {
         const kayitliHisseler = localStorage.getItem(STORAGE_KEY);
         if (kayitliHisseler) {
@@ -343,7 +359,7 @@
         
         hisseler.forEach((hisse) => {
             const tlKarZarar = (hisse.fiyat - hisse.maliyet) * hisse.adet;
-            const tlKarZararY = ((hisse.fiyat - hisse.maliyet)/hisse.maliyet*100).toFixed(2);
+            const tlKarZararY = hisse.maliyet !== 0 ? ((hisse.fiyat - hisse.maliyet)/hisse.maliyet*100) : 0;
             toplamKZ += tlKarZarar;
             
             const row = document.createElement("div");
@@ -355,7 +371,7 @@
             
             row.innerHTML = `
                 <div class="main-data grid-layout">
-                    <div class="col-symbol">${hisse.ad}</div>
+                    <div class="col-symbol sticky-col">${hisse.ad}</div>
                     <div class="col-val">${hisse.maliyet.toFixed(2)}</div>
                     <div class="col-val">${hisse.adet}</div>
                     <div class="col-kz ${karZararRenk}" style="font-size: ${fontSize};">${formattedKZ}</div>
@@ -421,7 +437,7 @@
                     
                     hisseler.forEach(hisse => {
                         const temizAd = hisse.ad.replace('-CARI', '');
-                        if (hisseKod.includes(temizAd)) {
+                        if (hisseKod === temizAd || hisseKod.includes(temizAd)) {
                             hisse.fiyat = yeniFiyat;
                             hisse.karZarar = (yeniFiyat - hisse.maliyet) * hisse.adet;
                             guncellendi = true;
@@ -449,7 +465,6 @@
         }
     }
 
-    // 5 dakikada bir otomatik güncelleme
     setInterval(guncelFiyatlariGetir, 300000);
 </script>
 
