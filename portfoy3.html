@@ -34,8 +34,12 @@
         /* Izgara Yapısı (Grid Layout) */
         .grid-layout {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1.2fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr 1.2fr 1fr 1fr;
             align-items: center;
+            min-width: 500px;
+        }
+        #hisseTableBody, .table-header, .total-row {
+        overflow-x: auto;
         }
 
         /* Sütun Başlıkları */
@@ -171,6 +175,7 @@
         <div>Miktar</div>
         <div>K/Z</div>
         <div>Kapanış</div>
+        <div>K/Z%</div>
     </div>
 
 			
@@ -254,7 +259,7 @@
 
 <script>
     let hisseler = [];
-    const STORAGE_KEY = 'hisseler_3';
+    const STORAGE_KEY = 'hisseler_2';
     
     // Panel Aç/Kapat
     function toggleAdminPanel() {
@@ -338,12 +343,14 @@
         
         hisseler.forEach((hisse) => {
             const tlKarZarar = (hisse.fiyat - hisse.maliyet) * hisse.adet;
+            const tlKarZararY = ((hisse.fiyat - hisse.maliyet)/hisse.maliyet*100).toFixed(2);
             toplamKZ += tlKarZarar;
             
             const row = document.createElement("div");
             row.classList.add("portfolio-row");
             const karZararRenk = tlKarZarar < 0 ? "red" : "green";
             const formattedKZ = tlKarZarar.toLocaleString('tr-TR', trLocale);
+            const formattedKZY = tlKarZararY.toLocaleString('tr-TR', trLocale);
             const fontSize = getKZFontSize(formattedKZ);
             
             row.innerHTML = `
@@ -353,6 +360,7 @@
                     <div class="col-val">${hisse.adet}</div>
                     <div class="col-kz ${karZararRenk}" style="font-size: ${fontSize};">${formattedKZ}</div>
                     <div class="col-val">${hisse.fiyat.toFixed(2)}</div>
+                    <div class="col-kz ${karZararRenk}" style="font-size: ${fontSize};">${formattedKZY}</div>
                 </div>
             `;
             tableBody.appendChild(row);
@@ -447,4 +455,3 @@
 
 </body>
 </html>
-
